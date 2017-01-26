@@ -1,0 +1,103 @@
+@media print {
+  #system-name, #header, #footer {display:none}
+  #developer-toolbar, .developer-support-footer {display:none}
+
+  #content-wrapper a.print:after {
+     content: " (" attr(href) ") "
+  }
+
+  .xolp-doc pre {
+      background: #f00;
+  }
+  .pagebreak {
+      page-break-before:always;
+  }
+}
+
+@media screen {
+    .print-only {display:none}
+    .xolp-doc pre {
+        background: #444;
+        color:white;
+        padding: 0.5em;
+    }
+    .library_file pre {
+        padding-top: 1em;
+        padding-bottom: 0em;
+    }
+    .porcelain_proc pre {
+        background: inherit;
+        color: inherit;
+        padding-top: 1em;
+        padding-bottom: 0em;
+    }
+}
+dl {margin-top:1em !important;}
+dl dd {margin-left:2em;}
+dl dd {margin-bottom:0.75em;}
+
+ul li {
+  list-style-type: disc;
+}
+ol li {
+  list-style-type: decimal;
+}
+.figures {
+  text-align: center;
+}
+.figures .figure {
+  display: inline-block;
+  margin: 0 1em 0 1em;
+  width: 25%;
+}
+.figures .figure img {
+  width: 100%;
+}
+.figure {
+  text-align: center;
+  font-style:italic;
+}
+
+td {
+  border: 1px solid gray;
+  background: #eee;
+  padding: 0.2em;
+}
+
+.library_file {
+    background:#eee;
+    margin: 1em;
+    padding: 0 1em;
+    border: 1px solid #999;
+}
+.porcelain_proc {
+    background: #ddd;
+    margin: 1em;
+    padding: 0 1em;
+    border: 2px solid #666;
+}
+
+.porcelain_proc blockquote {
+  margin:0
+}
+/* The 'note' styles are based on W3C's */
+.note {
+    border: 2px solid #CFF6D9;
+    margin-left: 2em;
+    padding: 0.3em 1em 1em 2em;
+    color: #444;
+    background-color: #E2FFF0;
+    font-size: 0.8em;
+}
+span.notetitle {
+    background-color: white;
+    border: 1px solid #CFF6D9;
+    padding: .2em;
+    color:#066;
+    position:relative;
+    display: block;
+    width: 40px;
+    left: -3em;
+    top: 0em;
+    text-align: center;
+}
