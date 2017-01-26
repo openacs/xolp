@@ -1232,19 +1232,6 @@ aa_register_case \
             }
     }
 
-# aa_register_case \
-#     -procs {::xolp::Indicator} \
-#     -cats {populator} \
-#     populate_import_csv {
-#     } {
-#         aa_run_with_teardown \
-#             -test_code {
-# #                ::xolp::Importer import_csv \
-# #                        -file [file join [acs_package_root_dir xolp] www import.csv] \
-# #                        -activity_iri_base "xolp:test:course1:"
-#             }
-#     }
-
 aa_register_case \
     -procs {::xolp::Indicator} \
     -cats {populator stress} \

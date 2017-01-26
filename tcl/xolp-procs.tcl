@@ -179,41 +179,6 @@ namespace eval ::xolp {
       (SELECT count(*) from xolp_evalscales) AS evalscales;
   }
 
-#   #
-#   #
-#   # Development stub: CSV Import
-#   #
-#   #
-# 
-#   package require csv
-#   package require struct::matrix
-# 
-#   ::xotcl::Object create ::xolp::Importer -ad_doc {}
-# 
-#   Importer ad_proc import_csv {
-#     {-file:required}
-#     {-activity_iri_base:required}
-#   } {
-#     @param headers Name each
-#     @param columns Provides a header for each column in the csv.
-#                    Columns with known headers are processed, others are ignored.
-#   } {
-#     oacs_util::csv_foreach \
-#       -file $file \
-#       -array_name row {
-#           set iri ${activity_iri_base}[ns_sha1 $row(activity)]
-#           ::xolp::Activity require \
-#                   -iri $iri \
-#                   -title $row(activity)
-#           ::xolp::Indicator insert \
-#                   -user_id 1 \
-#                   -activity_version_id $activity_version_id \
-#                   -end_timestamp "2016-12-20 09:58:00" \
-#                   -result_numerator 100 \
-#                   -result_denominator 100
-#       }
-#   }
-
 }
 
 ::xo::library source_dependent
