@@ -124,7 +124,7 @@ $evalscale add_to_activity -activity_version_id $activity_version_id
 <h4>Indicator Retrieval</h4>
 <p>
 There is a generic procedure
-<a href="/api-doc/proc-view?proc=%3a%3axolp%3a%3aIndicator+proc+get_values_from_db&source_p=1"><code>::xolp::Indicator get_values_from_db</code></a>
+<a href="/api-doc/proc-view?proc=%3a%3axolp%3a%3aIndicator+proc+get_values_from_db&amp;source_p=1"><code>::xolp::Indicator get_values_from_db</code></a>
 that allows for (filtered) retrieval of indicators from the fact table.
 </p>
 
@@ -132,7 +132,7 @@ that allows for (filtered) retrieval of indicators from the fact table.
 <p>
 An example for retrieving indicators filtered by time
 is implemented in testcase
-<a href="/test/admin/testcase?testcase_id=indicator_time_queries&package_key=xolp&showsource=1">indicator_datetime_queries</a>
+<a href="/test/admin/testcase?testcase_id=indicator_time_queries&amp;package_key=xolp&amp;showsource=1">indicator_datetime_queries</a>
 and exemplified below.
 </p>
 <pre><code>set activity_iri "http://example.com/practice1"
@@ -204,7 +204,7 @@ set li [::xolp::Indicator get_values_from_db \
 <h5>Activity Verb-based Filtering (i.e. Usage Type)</h5>
 <p>
 An example for retrieving indicators filtered by usage type (ActivityVerb) is implemented in testcase
-<a href="/test/admin/testcase?testcase_id=indicator_verb_queries&package_key=xolp&showsource=1">indicator_verb_queries</a>.
+<a href="/test/admin/testcase?testcase_id=indicator_verb_queries&amp;package_key=xolp&amp;showsource=1">indicator_verb_queries</a>.
 </p>
 
 <pre><code>
@@ -246,7 +246,7 @@ array get results
 
 <p>
 The xolp package is shipped with a
-<a href="/test/admin/index?by_package_key=xolp&view_by=testcase">comprehensive test suite</a>,
+<a href="/test/admin/index?by_package_key=xolp&amp;view_by=testcase">comprehensive test suite</a>,
 which can serve as a cookbook for developers with respect to correctly
 using the api.
 </p>
