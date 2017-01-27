@@ -7,7 +7,6 @@
 }
 
 ::xo::library require xolp-activity-procs
-::xo::library require xolp-competency-procs
 ::xo::library require xolp-date-procs
 ::xo::library require xolp-time-procs
 

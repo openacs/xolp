@@ -5,6 +5,8 @@
   @date 2017
 }
 
+::xo::library require xolp-indicator-procs
+
 namespace eval ::xolp {
 
   #
