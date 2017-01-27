@@ -56,14 +56,14 @@ namespace eval ::xolp {
     user_id               {INTEGER NOT NULL REFERENCES users ON DELETE CASCADE}
     activity_verb_id      {INTEGER NOT NULL REFERENCES xolp_activity_verb_dimension}
     activity_version_id   {INTEGER NOT NULL REFERENCES xolp_activity_dimension ON DELETE CASCADE}
-    competency_set_id     {INTEGER NOT NULL REFERENCES xolp_competency_set_dimension DEFAULT 1 ON DELETE SET DEFAULT}
-    begin_timestamp       {TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW() CHECK (begin_timestamp <= end_timestamp)}
+    competency_set_id     {INTEGER DEFAULT 1 NOT NULL REFERENCES xolp_competency_set_dimension ON DELETE SET DEFAULT}
+    begin_timestamp       {TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL CHECK (begin_timestamp <= end_timestamp)}
     begin_date_id         {INTEGER NOT NULL REFERENCES xolp_date_dimension}
     begin_time_id         {INTEGER NOT NULL REFERENCES xolp_time_dimension}
-    end_timestamp         {TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()}
+    end_timestamp         {TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL}
     end_date_id           {INTEGER NOT NULL REFERENCES xolp_date_dimension}
     end_time_id           {INTEGER NOT NULL REFERENCES xolp_time_dimension}
-    storage_timestamp     {TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW() CHECK (end_timestamp <= storage_timestamp)}
+    storage_timestamp     {TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL CHECK (end_timestamp <= storage_timestamp)}
     storage_date_id       {INTEGER NOT NULL REFERENCES xolp_date_dimension}
     storage_time_id       {INTEGER NOT NULL REFERENCES xolp_time_dimension}
     result_numerator      {INTEGER NOT NULL}
