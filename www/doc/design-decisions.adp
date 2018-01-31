@@ -10,7 +10,7 @@
     <dl>
       <dt>(Durable) Storage of Indicators and Activities</dt>
       <dd>
-        The persistance of indicators and activities.
+        The persistence of indicators and activities.
         Although it is possible to update and delete all data via the API,
         indicators are typically simply imported/pushed into the
         data base without the need for further modification.
@@ -72,7 +72,7 @@
         There are several entities in <code>xolp</code> for which we expect only a few instances.
         For example, we will only need a handful of ActivityVerbs and EvaluationSchemas, and in practice
         probably even not too many EvalutionScales (if the client application cares about deduplication).
-        By refering to these resources via human-readable identifiers, we are able to write nice readable
+        By referring to these resources via human-readable identifiers, we are able to write nice readable
         code such as
         <code>::xolp::EvaluationSchema require -iri "https://dotlrn.org/xolp/evaluation-schemas/at-five-to-one"</code>
         or
@@ -121,7 +121,7 @@
     <a href="http://www.kimballgroup.com/2008/09/slowly-changing-dimensions-part-2/">
     Slowly Changing Dimension (of Type 2)</a>.
   </dd>
-  <dt>Activity Hierachy</dt>
+  <dt>Activity Hierarchy</dt>
   <dd>
     It is natural to think of activities at different granularity levels, or that
     an activity can comprise several sub-activities.

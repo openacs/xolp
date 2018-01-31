@@ -325,7 +325,7 @@ namespace eval ::xolp {
        ::xo::db::Attribute create title
        ::xo::db::Attribute create description
     } -ad_doc {
-      An activity verb may be refered to as "type of usage" of an activity object.
+      An activity verb may be referred to as "type of usage" of an activity object.
       For example, a client application may want to differentiate between
       "practicing" and "competing in" an exam.
     }

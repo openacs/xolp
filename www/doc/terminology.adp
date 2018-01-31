@@ -12,7 +12,7 @@
     Within the xolp system, these processes (activities) are considered to be
     referred to/identified by IRIs.
     <br>
-    Note: The detailled semantics of how to represent activities (processes)
+    Note: The detailed semantics of how to represent activities (processes)
     and/or their instances is up to the context and domain of the client of
     the xolp package.
     In other words, whether or not the fact that "three people answered a personalized
