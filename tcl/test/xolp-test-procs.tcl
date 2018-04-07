@@ -911,12 +911,14 @@ aa_register_case \
           -rollback \
           -test_code {
 
-              # Assumption: Aggregations of the activity hierarchy do not fit
-              #             well to time-queries, because questions like
-              #             "What mark would you have if you had been only
-              #             attending the course on Mondays" dont male too much
-              #             sense. However, the average result on weekends in
-              #             comparison to weekdays might be interesting.
+              # Assumption: Aggregations of the activity hierarchy do
+              #             not fit well to time-queries, because
+              #             questions like "What mark would you have
+              #             if you had been only attending the course
+              #             on Mondays" doesn't make too much
+              #             sense. However, the average result on
+              #             weekends in comparison to weekdays might
+              #             be interesting.
 
               set activity_iri "http://example.com/practice1"
               set activity_version_id [::xolp::Activity require -iri $activity_iri -return id]
