@@ -145,7 +145,7 @@ namespace eval ::xolp {
   } {
     Get the level that encompasses the result.
   } {
-    if {[expr {$result < 0}] || [expr {$result > 100}]} {
+    if {$result < 0 || $result > 100} {
       ns_log Warning "Result must be within 0 and 100"
       return -1
     }
