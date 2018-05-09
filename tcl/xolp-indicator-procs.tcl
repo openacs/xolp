@@ -199,8 +199,8 @@ namespace eval ::xolp {
       }
     }
     set sql ""
-    set dimensions {}
-    set where_clause {}
+    set dimensions [list]
+    set where_clause [list]
     # Dimension: Activities
     if {$activity_iris ne ""} {
       set dimension_table "xolp_activity_dimension"
