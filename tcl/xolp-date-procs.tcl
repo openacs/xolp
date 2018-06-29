@@ -2,7 +2,7 @@
   Data model and populator for the date dimension (and its views)
 
   @author Michael Aram
-  @date 2017
+  @creation-date 2017
   @see http://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/calendar-date-dimension/
 }
 

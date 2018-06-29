@@ -2,7 +2,7 @@
   Data model and populator for the time dimension (and its views)
 
   @author Michael Aram
-  @date 2017
+  @creation-date 2017
   @see http://www.kimballgroup.com/1997/07/its-time-for-time/
 }
 

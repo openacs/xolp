@@ -2,7 +2,7 @@
   OpenACS package manager (APM) callback implementation.
 
   @author Michael Aram
-  @date 2017
+  @creation-date 2017
 }
 
 namespace eval ::xolp {}

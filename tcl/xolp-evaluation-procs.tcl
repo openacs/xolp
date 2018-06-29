@@ -2,7 +2,7 @@
   Data model and implementation for evaluation scale and evaluation schema.
 
   @author Michael Aram
-  @date 2017
+  @creation-date 2017
 }
 
 package require math::fuzzy

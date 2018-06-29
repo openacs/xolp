@@ -2,7 +2,7 @@ ad_library {
   Regression test suite
 
   @author Michael Aram
-  @date 2017
+  @creation-date 2017
 
 }
 

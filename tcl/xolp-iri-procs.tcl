@@ -2,7 +2,7 @@
   IRI (URI/URN) oriented database layer
 
   @author Michael Aram
-  @date 2017
+  @creation-date 2017
 }
 
 namespace eval ::xolp {}

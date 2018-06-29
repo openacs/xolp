@@ -3,7 +3,7 @@
   in particular the central fact table of the data mart.
 
   @author Michael Aram
-  @date 2017
+  @creation-date 2017
 }
 
 ::xo::library require xolp-activity-procs

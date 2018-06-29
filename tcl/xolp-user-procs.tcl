@@ -6,7 +6,7 @@
   the user as "anchor", such as "get all results for this user".
 
   @author Michael Aram
-  @date 2017
+  @creation-date 2017
 }
 
 namespace eval ::xolp {
