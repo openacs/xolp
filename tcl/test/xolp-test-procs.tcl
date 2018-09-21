@@ -1569,4 +1569,3 @@ aa_register_case \
               aa_equals "User is not a thinker." [$level name] "luser"
           }
     }
-
