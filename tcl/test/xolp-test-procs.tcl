@@ -1313,7 +1313,7 @@ aa_register_case \
                   -iri [lindex $activity_iris 0] \
                   -policy best]
               aa_log "Result: $result"
-              aa_true "User didnt do this activity" {$result eq ""}
+              aa_true "User didn't do this activity" {$result eq ""}
 
               set result [::xolp::User get_result \
                   -user_id [lindex $user_ids 0] \
