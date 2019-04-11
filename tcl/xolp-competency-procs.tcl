@@ -164,7 +164,7 @@ namespace eval ::xolp {
   ::xo::db::require table xolp_competency_set_dimension {
     competency_set_id {SERIAL PRIMARY KEY}
   } {
-    INSERT INTO xolp_competency_set_bridge DEFAULT VALUES;
+    INSERT INTO xolp_competency_set_dimension DEFAULT VALUES;
   }
 
   ::xo::db::require table xolp_competency_set_bridge {
