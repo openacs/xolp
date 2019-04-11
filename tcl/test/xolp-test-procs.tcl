@@ -351,10 +351,11 @@ aa_register_component \
         set end_timestamp [db_string now {select current_timestamp(0)}]
         set result_numerator [format "%.0f" [expr {[random] * 100}]]
         set indicator [::xolp::Indicator insert \
-              -activity_version_id $activity_version_id \
-              -end_timestamp $end_timestamp \
-              -result_numerator $result_numerator \
-              -return object]
+                           -activity_version_id $activity_version_id \
+                           -begin_timestamp $end_timestamp \
+                           -end_timestamp $end_timestamp \
+                           -result_numerator $result_numerator \
+                           -return object]
         aa_log [$indicator serialize]
         aa_equals "Indicator activity version id correct" [$indicator activity_version_id] $activity_version_id
         aa_equals "Indicator user id correct" [$indicator user_id] [ad_conn user_id]
