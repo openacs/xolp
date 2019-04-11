@@ -9,6 +9,7 @@
 ::xo::library require xolp-activity-procs
 ::xo::library require xolp-date-procs
 ::xo::library require xolp-time-procs
+::xo::library require xolp-competency-procs
 
 namespace eval ::xolp {
 

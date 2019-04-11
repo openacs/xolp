@@ -63,22 +63,32 @@ namespace eval ::xolp::apm {
   }
 
   ad_proc -private ::xolp::apm::before_uninstall {} {
+    # drop functions
     ::xo::dc dml drop "DROP FUNCTION IF EXISTS xolp_activity_dimension__upsert(TEXT, TEXT, INTEGER, TEXT, INTEGER, TIMESTAMP WITH TIME ZONE)"
+    ::xo::dc dml drop "DROP FUNCTION IF EXISTS xolp_weighted_result(INTEGER, TEXT, TEXT, TEXT)"
+    ::xo::dc dml drop "DROP FUNCTION IF EXISTS xolp_weighted_competency_result(INTEGER, TEXT, TEXT, TEXT, TEXT)"
+    ::xo::dc dml drop "DROP FUNCTION IF EXISTS xolp_compare_array_as_set(anyarray,anyarray)"
+    
+    # drop tables
     ::xo::dc dml drop "DROP TABLE IF EXISTS xolp_activity_hierarchy_bridge CASCADE"
     ::xo::dc dml drop "DROP TABLE IF EXISTS xolp_indicator_facts CASCADE"
-    # TODO: Review order of deletions of competency-tables
-    ::xo::dc dml drop "DROP TABLE IF EXISTS xolp_competency_hierarchy_bridge CASCADE"
-    #::xo::dc dml drop "DROP TABLE IF EXISTS xolp_competency_dimension CASCADE"
-    ::xo::dc dml drop "DROP TABLE IF EXISTS xolp_competency_set_bridge CASCADE"
-    ::xo::dc dml drop "DROP TABLE IF EXISTS xolp_competency_set_dimension CASCADE"
-    ::xo::dc dml drop "DROP TABLE IF EXISTS xolp_evalscale_activity_bridge CASCADE"
     ::xo::dc dml drop "DROP VIEW IF EXISTS xolp_begin_date_dimension CASCADE"
     ::xo::dc dml drop "DROP VIEW IF EXISTS xolp_end_date_dimension CASCADE"
     ::xo::dc dml drop "DROP VIEW IF EXISTS xolp_begin_time_dimension CASCADE"
     ::xo::dc dml drop "DROP VIEW IF EXISTS xolp_end_time_dimension CASCADE"
+    ::xo::dc dml drop "DROP TABLE IF EXISTS xolp_competency_hierarchy_bridge CASCADE"
+    ::xo::dc dml drop "DROP TABLE IF EXISTS xolp_activity_competency_bridge CASCADE"
+    ::xo::dc dml drop "DROP TABLE IF EXISTS xolp_evalscale_competency_bridge CASCADE"
+    ::xo::dc dml drop "DROP TABLE IF EXISTS xolp_competency_set_bridge CASCADE"
+    ::xo::dc dml drop "DROP TABLE IF EXISTS xolp_competency_set_dimension CASCADE"
+    ::xo::dc dml drop "DROP TABLE IF EXISTS xolp_evalscale_activity_bridge CASCADE"
     ::xo::dc dml drop "DROP TABLE IF EXISTS xolp_time_dimension CASCADE"
     ::xo::dc dml drop "DROP TABLE IF EXISTS xolp_date_dimension CASCADE"
-
+    
+    # triggers
+    ::xo::dc dml drop "DROP FUNCTION IF EXISTS xolp_indicator_upsert_tr()"
+    
+    
     set classes {
       ::xolp::Activity ::xolp::EvaluationScale ::xolp::EvaluationSchema
       ::xolp::ActivityVerb ::xolp::ActivityType ::xolp::Competency
