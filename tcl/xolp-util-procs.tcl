@@ -15,20 +15,20 @@ package require uuid
 
 namespace eval ::xolp::util {
 
-    ad_proc lcontains {list1 list2} {
+    ad_proc -private lcontains {list1 list2} {
       foreach pattern $list2 {
         if {[lsearch $list1 $pattern] ne -1} {return 1}
       }
       return 0
     }
 
-    ad_proc ltransform {{-prefix ":"} {-suffix ""} list} {
+    ad_proc -private ltransform {{-prefix ":"} {-suffix ""} list} {
       set transformed_list {}
       foreach e $list {lappend transformed_list ${prefix}${e}${suffix}}
       return $transformed_list
     }
 
-    ad_proc lremove {list elements_to_be_removed} {
+    ad_proc -private lremove {list elements_to_be_removed} {
         foreach e $elements_to_be_removed {
           set list [lsearch -all -inline -not -exact $list $e]
         }

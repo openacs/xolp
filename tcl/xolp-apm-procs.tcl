@@ -8,7 +8,7 @@
 namespace eval ::xolp {}
 namespace eval ::xolp::apm {
 
-  ad_proc -public ::xolp::apm::after_install {} {
+  ad_proc -private ::xolp::apm::after_install {} {
     ::xolp::EvaluationSchema require \
         -iri "https://dotlrn.org/xolp/evaluation-schemas/at-five-to-one" \
         -title "5 to 1" \

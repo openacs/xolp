@@ -31,7 +31,9 @@ namespace eval ::xolp {
       e.g. grades.
     }
 
-  ::xolp::EvaluationSchema ad_proc new_persistent_object {args} {} {
+  ::xolp::EvaluationSchema ad_proc new_persistent_object {args} {
+      Create new persistent object
+  } {
     array set argsarray $args
     if {[llength [array get argsarray "-level_names"]] > 0
         && [llength [array get argsarray "-positive_threshold_index"]] > 0
@@ -80,7 +82,9 @@ namespace eval ::xolp {
     "
   }
 
-  ::xolp::EvaluationScale ad_instproc initialize_loaded_object {} {} {
+  ::xolp::EvaluationScale ad_instproc initialize_loaded_object {} {
+      Initialize loaded object
+  } {
     my levels
   }
 

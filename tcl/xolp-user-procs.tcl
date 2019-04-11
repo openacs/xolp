@@ -44,7 +44,9 @@ namespace eval ::xolp {
     {-context_iri ""}
     {-policy "best"}
     {-null_as_zero false}
-  } {} {
+  } {
+      Get evaluation
+  } {
     set activity_version_id [lindex [::xolp::Activity get_object_ids -iri $iri] 0]
     set evalscale [::xolp::EvaluationScale get_evalscales_from_activity_version_id -activity_version_id $activity_version_id]
     if {$evalscale eq ""} {
@@ -143,7 +145,9 @@ namespace eval ::xolp {
     {-policy "best"}
     {-format "%.2f"}
     {-null_as_zero false}
-  } {} {
+  } {
+      Get competency result
+  } {
     set agg [string map -nocase {best max  worst min  average avg} $policy]
     if {$agg ni "min max avg"} {error "Unknown policy."}
     set sql "SELECT xolp_weighted_competency_result(:user_id::INTEGER,:competency_iri::TEXT,:agg::TEXT)"
@@ -158,7 +162,9 @@ namespace eval ::xolp {
     {-policy "best"}
     {-format "%.2f"}
     {-null_as_zero false}
-  } {} {
+  } {
+      Get competency evaluation
+  } {
     set result [my get_competency_result \
         -format "%s" \
         -user_id $user_id \

@@ -38,14 +38,18 @@ namespace eval ::xolp {
       Primary Fact Table Abstraction
     }
 
-  ::xolp::Indicator ad_proc essential_attributes {} {} {
+  ::xolp::Indicator ad_proc essential_attributes {} {
+      Return essential attributes
+  } {
     set attributes [::xolp::util::lremove [my info parameter] {
       indicator_id begin_date_id end_date_id begin_time_id end_time_id storage_date_id storage_time_id
     }]
     return $attributes
   }
 
-  ::xolp::Indicator ad_instproc init args {} {
+  ::xolp::Indicator ad_instproc init args {
+      Init class
+  } {
     next
     my destroy_on_cleanup
   }
@@ -108,7 +112,9 @@ namespace eval ::xolp {
 
   ::xolp::Indicator ad_proc exists_in_db {
     {-indicator_id:required}
-  } {} {
+  } {
+      Checks for objects existance in the database
+  } {
     ::xo::dc get_value [my qn select_object] "select 1 from xolp_indicator_facts where indicator_id = :indicator_id" 0
   }
 
@@ -116,7 +122,9 @@ namespace eval ::xolp {
     {-indicator_id ""}
     {-user_ids ""}
     {-activity_version_ids ""}
-  } {} {
+  } {
+      Delete object
+  } {
     if {$indicator_id ne ""} {
       ::xo::dc dml [my qn delete] "DELETE FROM xolp_indicator_facts WHERE indicator_id = :indicator_id"
     } elseif {$user_id ne "" and $activity_version_ids ne ""} {
@@ -351,7 +359,9 @@ namespace eval ::xolp {
 
   }
 
-  ::xolp::Indicator ad_instproc save {} {} {
+  ::xolp::Indicator ad_instproc save {} {
+      Save object
+  } {
     set attributes [[my info class] essential_attributes]
     my instvar indicator_id {*}$attributes
     foreach a $attributes {
