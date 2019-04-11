@@ -348,7 +348,7 @@ aa_register_component \
         aa_export_vars {iri indicator}
         set activity [::xolp::Activity current -iri $iri]
         set activity_version_id [$activity activity_version_id]
-        set end_timestamp [db_string now {select current_timestamp(0)}]
+        set end_timestamp [db_string now {select current_timestamp(0) - cast('1 hour' as interval)}]
         set result_numerator [format "%.0f" [expr {[random] * 100}]]
         set indicator [::xolp::Indicator insert \
                            -activity_version_id $activity_version_id \
