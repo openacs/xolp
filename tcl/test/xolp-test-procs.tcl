@@ -348,23 +348,20 @@ aa_register_component \
         aa_export_vars {iri indicator}
         set activity [::xolp::Activity current -iri $iri]
         set activity_version_id [$activity activity_version_id]
-        set end_timestamp [dt_systime]
+        set end_timestamp [db_string now {select current_timestamp(0)}]
         set result_numerator [format "%.0f" [expr {[random] * 100}]]
         set indicator [::xolp::Indicator insert \
               -activity_version_id $activity_version_id \
               -end_timestamp $end_timestamp \
               -result_numerator $result_numerator \
               -return object]
-        # TODO - Timezone...
         aa_log [$indicator serialize]
-        aa_true "Persisting a new indicator succeeded" {
-            [$indicator activity_version_id] eq $activity_version_id
-            && [$indicator user_id] eq [ad_conn user_id]
-            && [$indicator result_numerator] eq $result_numerator
-            && [$indicator result_denominator] eq 100
-            && [$indicator begin_timestamp] eq "${end_timestamp}+01"
-            && [$indicator end_timestamp] eq "${end_timestamp}+01"
-        }
+        aa_equals "Indicator activity version id correct" [$indicator activity_version_id] $activity_version_id
+        aa_equals "Indicator user id correct" [$indicator user_id] [ad_conn user_id]
+        aa_equals "Indicator result numerator correct" [$indicator result_numerator] $result_numerator
+        aa_equals "Indicator result denominator correct" [$indicator result_denominator] 100
+        aa_equals "Indicator begin timestamp correct" [$indicator begin_timestamp] $end_timestamp
+        aa_equals "Indicator end timestamp correct" [$indicator end_timestamp] $end_timestamp
     }
 
 aa_register_component \
@@ -399,19 +396,19 @@ aa_register_component \
         aa_export_vars {iri indicator}
         set activity [::xolp::Activity current -iri $iri]
         ns_log Notice "The following error is intended by the test suite!"
-        catch {::xolp::Indicator insert \
-          -user_id "0" \
-          -activity_version_id [$activity activity_version_id] \
-          -begin_timestamp "2014-01-04 00:00:00" \
-          -end_timestamp "2014-01-03 00:00:00" \
-          -result_numerator [format "%.0f" [expr {[random] * 1000}]] \
-          -competency_set_id 1 \
-          -result_denominator 1000 \
-          -return object} catch_result
+        set error_p [catch {
+            ::xolp::Indicator insert \
+                -user_id "0" \
+                -activity_version_id [$activity activity_version_id] \
+                -begin_timestamp "2014-01-04 00:00:00" \
+                -end_timestamp "2014-01-03 00:00:00" \
+                -result_numerator [format "%.0f" [expr {[random] * 1000}]] \
+                -competency_set_id 1 \
+                -result_denominator 1000 \
+                -return object
+        } catch_result]
         aa_log $catch_result
-        aa_true "Requiring a indicator with a bad timespan errored as expected" {
-            [string match "*violates check constraint*" $catch_result]
-        }
+        aa_true "Requiring a indicator with a bad timespan errored as expected" $error_p
     }
 
 aa_register_component \
