@@ -1222,7 +1222,7 @@ aa_register_case \
                 aa_export_vars {activity_iris activity_version_ids}
                 set amount 10000
                 for {set i 1} {$i <= $amount} {incr i} {
-                    set activity_iri [::xolp::test::create_test_iris]"
+                    set activity_iri [::xolp::test::create_test_iris]
                     set activity [::xolp::Activity new_persistent_object \
                       -iri $activity_iri \
                       -title "Activity $i"]
