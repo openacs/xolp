@@ -1422,6 +1422,16 @@ aa_register_case \
         aa_run_with_teardown \
             -rollback \
             -test_code {
+              ::xolp::Indicator insert \
+                      -user_id [ad_conn user_id] \
+                      -activity_version_id $exam1 \
+                      -result_numerator 90
+
+              ::xolp::Indicator insert \
+                      -user_id [ad_conn user_id] \
+                      -activity_version_id $exam2 \
+                      -result_numerator 80
+
               set c [::xolp::User get_competencies -user_id [ad_conn user_id]]
               aa_equals "2 directly attached competencies." [llength [dict keys $c]] 2
               set c [::xolp::User get_competencies_recursive -user_id [ad_conn user_id]]
