@@ -156,6 +156,18 @@ namespace eval ::xolp {
     }
   }
 
+  ::xolp::Competency ad_proc get_competencies {
+    {-competency_iri:required}
+  } {
+    @return List of competency IRIs attached to the given competency.
+  } {
+      return [::xo::dc list get_competencies {
+          SELECT competency_iri
+          FROM xolp_competency_hierarchy_bridge
+          WHERE context_competency_iri = :competency_iri
+      }]
+  }
+
   #
   # Bridge: Indicators (facts) reference sets of competencies
   #

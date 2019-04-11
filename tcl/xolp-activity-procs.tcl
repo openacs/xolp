@@ -137,6 +137,15 @@ namespace eval ::xolp {
     return $result_dict
   }
 
+  ::xolp::Activity ad_proc get_activities_of_package {
+    {-package_id:required}
+  } {
+    @return IDs of all activities of a package
+  } {
+    set sql "SELECT iri, title FROM xolp_activity_dimension WHERE package_id = :package_id"
+    return [::xo::dc list_of_lists acitivities_of_package $sql]
+  }
+
   ::xolp::Activity ad_proc new_persistent_object {
     {-iri:required}
     {-title ""}
@@ -156,6 +165,19 @@ namespace eval ::xolp {
       }
     }
     next
+  }
+
+  ::xolp::Activity ad_proc update_title {
+    {-activity_version_id:required}
+    {-title ""}
+  } {
+    Updates the activity in the xolp_activity_dimension table (without creating a new version).
+  } {
+      ::xo::dc dml update_activity {
+        UPDATE xolp_activity_dimension
+        SET title = :title, scd_valid_from = current_timestamp
+        WHERE activity_version_id = :activity_version_id
+      }
   }
 
   ::xolp::Activity ad_proc update {
