@@ -9,7 +9,7 @@
     <implements-subsite-p>f</implements-subsite-p>
     <inherit-templates-p>f</inherit-templates-p>
     
-    <version name="0.1d" url="http://openacs.org/repository/download/apm/xolp-0.1d.apm">
+    <version name="0.2d" url="http://openacs.org/repository/download/apm/xolp-0.2d.apm">
         <owner url="mailto:michael@aram.at">Michael Aram</owner>
         <summary>High performance, analytics-oriented storage infrastructure for competency-based learning performance.</summary>
         <release-date>2016-11-15</release-date>
@@ -17,8 +17,9 @@
         <description format="text/html">The &lt;code&gt;xolp&lt;/code&gt; package provides an infrastructure for storing and retrieving indicators, such as a student&#39;s assessment grade. The implemented data model with its accompanying application programming interface provides a data mart for analysing learners&#39; learning performance.</description>
         <maturity>0</maturity>
 
-        <provides url="xolp" version="0.1d"/>
+        <provides url="xolp" version="0.2d"/>
         <requires url="xotcl-core" version="0.150"/>
+        <requires url="acs-datetime" version="5.9.1"/>
 
         <callbacks>
             <callback type="before-uninstall" proc="::xolp::apm::before_uninstall"/>
