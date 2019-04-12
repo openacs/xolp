@@ -348,7 +348,7 @@ aa_register_component \
         aa_export_vars {iri indicator}
         set activity [::xolp::Activity current -iri $iri]
         set activity_version_id [$activity activity_version_id]
-        set end_timestamp [db_string now {select current_timestamp(0) - cast('1 hour' as interval)}]
+        set end_timestamp [::xo::dc get_value now {select current_timestamp(0) - cast('1 hour' as interval)}]
         set result_numerator [format "%.0f" [expr {[random] * 100}]]
         set indicator [::xolp::Indicator insert \
                            -activity_version_id $activity_version_id \
@@ -1244,9 +1244,9 @@ aa_register_case \
             -rollback \
             -test_code {
                 aa_export_vars {user_ids activity_iris}
-                set activity_version_ids [db_list -cache_key "xolp_test_activity_version_ids" _ "select activity_version_id from xolp_activity_dimension limit 5000"]
-                set activity_verb_ids [db_list _ "select activity_verb_id from xolp_activity_verb_dimension"]
-                set user_ids [db_list -cache_key "xolp_test_user_ids" _ "select user_id from users limit 5000"]
+                set activity_version_ids [::xo::dc list _ {select activity_version_id from xolp_activity_dimension limit 5000}]
+                set activity_verb_ids [::xo::dc list _ {select activity_verb_id from xolp_activity_verb_dimension}]
+                set user_ids [::xo::dc list _ {select user_id from users limit 5000}]
                 lappend user_ids [ad_conn user_id]
                 # Indicators
                 for {set i 0} {$i < 250000} {incr i} {
