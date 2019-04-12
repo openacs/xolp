@@ -45,7 +45,7 @@ namespace eval ::xolp {
     {-policy "best"}
     {-null_as_zero false}
   } {
-      Get evaluation
+    Get evaluation
   } {
     set activity_version_id [lindex [::xolp::Activity get_object_ids -iri $iri] 0]
     set evalscale [::xolp::EvaluationScale get_evalscales_from_activity_version_id -activity_version_id $activity_version_id]
@@ -53,19 +53,19 @@ namespace eval ::xolp {
       error "There is no evaluation scale associated with context '$iri'."
     }
     set result [:get_result \
-        -format "%s" \
-        -user_id $user_id \
-        -context_iri $context_iri \
-        -iri $iri \
-        -policy $policy \
-        -null_as_zero $null_as_zero]
+                    -format "%s" \
+                    -user_id $user_id \
+                    -context_iri $context_iri \
+                    -iri $iri \
+                    -policy $policy \
+                    -null_as_zero $null_as_zero]
     if {$result eq ""} {
       error "There is no result for user '$user_id' and activity '$iri' in context '$context_iri'.\n
           Depending on the context, you may want to use parameter null_as_zero to handle this."
     }
     set evaluated_results [::xolp::Evaluator evaluate \
-        -results $result \
-        -evalscales $evalscale]
+                               -results $result \
+                               -evalscales $evalscale]
     set evaluation [dict get $evaluated_results $result $evalscale]
     return $evaluation
   }
@@ -101,18 +101,18 @@ namespace eval ::xolp {
     #   FROM xolp_competency_dimension INNER JOIN competencies USING (competency_id)
     # "
     set sql {
-        SELECT iri, xolp_weighted_competency_result(:user_id,iri,:agg)
-        from (
-              select distinct cd.iri
-                from xolp_competency_dimension cd,
-                     xolp_activity_competency_bridge acb,
-                     xolp_activity_dimension ad,
-                     xolp_indicator_facts if
-               where cd.iri = acb.competency_iri
-                 and acb.activity_iri = ad.iri
-                 and ad.activity_version_id = if.activity_version_id
-                 and if.user_id = :user_id
-              ) as competencies
+      SELECT iri, xolp_weighted_competency_result(:user_id,iri,:agg)
+      from (
+            select distinct cd.iri
+            from xolp_competency_dimension cd,
+            xolp_activity_competency_bridge acb,
+            xolp_activity_dimension ad,
+            xolp_indicator_facts if
+            where cd.iri = acb.competency_iri
+            and acb.activity_iri = ad.iri
+            and ad.activity_version_id = if.activity_version_id
+            and if.user_id = :user_id
+            ) as competencies
     }
     set competencies [::xo::dc list_of_lists get_competencies $sql]
     set result_dict ""
@@ -168,7 +168,7 @@ namespace eval ::xolp {
     {-format "%.2f"}
     {-null_as_zero false}
   } {
-      Get competency result
+    Get competency result
   } {
     set agg [string map -nocase {best max  worst min  average avg} $policy]
     if {$agg ni "min max avg"} {error "Unknown policy."}
@@ -185,22 +185,22 @@ namespace eval ::xolp {
     {-format "%.2f"}
     {-null_as_zero false}
   } {
-      Get competency evaluation
+    Get competency evaluation
   } {
     set result [:get_competency_result \
-        -format "%s" \
-        -user_id $user_id \
-        -competency_iri $competency_iri \
-        -policy $policy \
-        -null_as_zero $null_as_zero]
+                    -format "%s" \
+                    -user_id $user_id \
+                    -competency_iri $competency_iri \
+                    -policy $policy \
+                    -null_as_zero $null_as_zero]
     if {$result eq ""} {
       error "There is no result for user '$user_id' and competency '$competency_iri'."
     }
     set evalscale [::xolp::EvaluationScale get_evalscales_from_competency_iri \
-        -competency_iri $competency_iri]
+                       -competency_iri $competency_iri]
     set evaluated_results [::xolp::Evaluator evaluate \
-        -results $result \
-        -evalscales $evalscale]
+                               -results $result \
+                               -evalscales $evalscale]
     set evaluation [dict get $evaluated_results $result $evalscale]
     return $evaluation
   }
@@ -208,3 +208,10 @@ namespace eval ::xolp {
 }
 
 ::xo::library source_dependent
+
+#
+# Local variables:
+#    mode: tcl
+#    tcl-indent-level: 2
+#    indent-tabs-mode: nil
+# End:

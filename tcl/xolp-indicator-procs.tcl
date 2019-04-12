@@ -17,30 +17,30 @@ namespace eval ::xolp {
   # Indicators
   #
   ::xotcl::Class create ::xolp::Indicator \
-    -parameter {
-      indicator_id
-      user_id
-      activity_verb_id
-      activity_version_id
-      competency_set_id
-      begin_timestamp
-      begin_date_id
-      begin_time_id
-      end_timestamp
-      end_date_id
-      end_time_id
-      storage_timestamp
-      storage_date_id
-      storage_time_id
-      result_numerator
-      result_denominator
-    } \
-    -ad_doc {
-      Primary Fact Table Abstraction
-    }
+      -parameter {
+        indicator_id
+        user_id
+        activity_verb_id
+        activity_version_id
+        competency_set_id
+        begin_timestamp
+        begin_date_id
+        begin_time_id
+        end_timestamp
+        end_date_id
+        end_time_id
+        storage_timestamp
+        storage_date_id
+        storage_time_id
+        result_numerator
+        result_denominator
+      } \
+      -ad_doc {
+        Primary Fact Table Abstraction
+      }
 
   ::xolp::Indicator ad_proc essential_attributes {} {
-      Return essential attributes
+    Return essential attributes
   } {
     set attributes [::xolp::util::lremove [:info parameter] {
       indicator_id begin_date_id end_date_id begin_time_id end_time_id storage_date_id storage_time_id
@@ -49,7 +49,7 @@ namespace eval ::xolp {
   }
 
   ::xolp::Indicator ad_instproc init args {
-      Init class
+    Init class
   } {
     next
     :destroy_on_cleanup
@@ -97,15 +97,15 @@ namespace eval ::xolp {
 
   ::xo::dc dml create-trigger {
     CREATE OR REPLACE FUNCTION xolp_indicator_upsert_tr() RETURNS trigger AS '
-        BEGIN
-            NEW.begin_date_id := (SELECT date_id FROM xolp_date_dimension where date = NEW.begin_timestamp::date);
-            NEW.begin_time_id := (SELECT time_id FROM xolp_time_dimension where time = to_char(NEW.begin_timestamp::time,''HH24:MI'')::time);
-            NEW.end_date_id := (SELECT date_id FROM xolp_date_dimension where date = NEW.end_timestamp::date);
-            NEW.end_time_id := (SELECT time_id FROM xolp_time_dimension where time = to_char(NEW.end_timestamp::time,''HH24:MI'')::time);
-            NEW.storage_date_id := (SELECT date_id FROM xolp_date_dimension where date = NEW.storage_timestamp::date);
-            NEW.storage_time_id := (SELECT time_id FROM xolp_time_dimension where time = to_char(NEW.storage_timestamp::time,''HH24:MI'')::time);
-            RETURN NEW;
-        END;
+    BEGIN
+    NEW.begin_date_id := (SELECT date_id FROM xolp_date_dimension where date = NEW.begin_timestamp::date);
+    NEW.begin_time_id := (SELECT time_id FROM xolp_time_dimension where time = to_char(NEW.begin_timestamp::time,''HH24:MI'')::time);
+    NEW.end_date_id := (SELECT date_id FROM xolp_date_dimension where date = NEW.end_timestamp::date);
+    NEW.end_time_id := (SELECT time_id FROM xolp_time_dimension where time = to_char(NEW.end_timestamp::time,''HH24:MI'')::time);
+    NEW.storage_date_id := (SELECT date_id FROM xolp_date_dimension where date = NEW.storage_timestamp::date);
+    NEW.storage_time_id := (SELECT time_id FROM xolp_time_dimension where time = to_char(NEW.storage_timestamp::time,''HH24:MI'')::time);
+    RETURN NEW;
+    END;
     ' LANGUAGE plpgsql;
     DROP TRIGGER IF EXISTS xolp_indicator_upsert_tr ON xolp_indicator_facts;
     CREATE TRIGGER xolp_indicator_upsert_tr BEFORE INSERT OR UPDATE ON xolp_indicator_facts FOR EACH ROW EXECUTE PROCEDURE xolp_indicator_upsert_tr();
@@ -114,7 +114,7 @@ namespace eval ::xolp {
   ::xolp::Indicator ad_proc exists_in_db {
     {-indicator_id:required}
   } {
-      Checks for objects existance in the database
+    Checks for objects existance in the database
   } {
     ::xo::dc get_value select_object {select 1 from xolp_indicator_facts where indicator_id = :indicator_id} 0
   }
@@ -124,7 +124,7 @@ namespace eval ::xolp {
     {-user_ids ""}
     {-activity_version_ids ""}
   } {
-      Delete object
+    Delete object
   } {
     if {$indicator_id ne ""} {
       ::xo::dc dml delete {DELETE FROM xolp_indicator_facts WHERE indicator_id = :indicator_id}
@@ -311,17 +311,17 @@ namespace eval ::xolp {
     @param begin_timestamp The timestamp at which the (learning) activity began (default: equal to end_timestamp)
     @param end_timestamp The timestamp at which the (learning) activity ended
     @param return Specify kind of return value. The default will return nothing and is the fastest.
-                  Further valid values are "id" (returns the newly created indicator_id)
-                  and "object", which returns an initialized instance object of type Indicator.
+    Further valid values are "id" (returns the newly created indicator_id)
+    and "object", which returns an initialized instance object of type Indicator.
   } {
     if {$user_id eq ""} {
       set user_id [ad_conn user_id]
     }
     if {$activity_version_id eq ""} {
       set activity_version_id [::xolp::Activity require \
-        -iri [ad_url][ad_conn url] \
-        -update false \
-        -return id]
+                                   -iri [ad_url][ad_conn url] \
+                                   -update false \
+                                   -return id]
     }
     set storage_timestamp [dt_systime]
     if {$end_timestamp eq ""} {
@@ -332,8 +332,8 @@ namespace eval ::xolp {
     }
     if {$activity_verb_id eq ""} {
       set activity_verb [::xolp::ActivityVerb require \
-        -iri "http://dotlrn.org/xolp/activity-verbs/unknown" \
-        -update false]
+                             -iri "http://dotlrn.org/xolp/activity-verbs/unknown" \
+                             -update false]
       set activity_verb_id [$activity_verb set activity_verb_id]
     }
     set attributes [:essential_attributes]
@@ -361,7 +361,7 @@ namespace eval ::xolp {
   }
 
   ::xolp::Indicator ad_instproc save {} {
-      Save object
+    Save object
   } {
     set attributes [[:info class] essential_attributes]
     :instvar indicator_id {*}$attributes
@@ -380,24 +380,31 @@ namespace eval ::xolp {
 
   ::xo::db::require view xolp_indicators_activities_view {
     SELECT
-      facts.user_id,
-      v.iri AS activity_verb_iri,
-      a.iri AS activity_iri,
-      facts.begin_timestamp,
-      facts.end_timestamp,
-      age(facts.end_timestamp, facts.begin_timestamp) AS duration,
-      facts.result_numerator,
-      facts.result_denominator,
-      (result_numerator::numeric / result_denominator::numeric) * 100 AS result_percentage
+    facts.user_id,
+    v.iri AS activity_verb_iri,
+    a.iri AS activity_iri,
+    facts.begin_timestamp,
+    facts.end_timestamp,
+    age(facts.end_timestamp, facts.begin_timestamp) AS duration,
+    facts.result_numerator,
+    facts.result_denominator,
+    (result_numerator::numeric / result_denominator::numeric) * 100 AS result_percentage
     FROM
-      xolp_indicator_facts facts
+    xolp_indicator_facts facts
     INNER JOIN
-      xolp_activity_dimension a USING (activity_version_id)
+    xolp_activity_dimension a USING (activity_version_id)
     INNER JOIN
-      xolp_activity_verb_dimension v USING (activity_verb_id)
+    xolp_activity_verb_dimension v USING (activity_verb_id)
   }
 
 
 }
 
 ::xo::library source_dependent
+
+#
+# Local variables:
+#    mode: tcl
+#    tcl-indent-level: 2
+#    indent-tabs-mode: nil
+# End:

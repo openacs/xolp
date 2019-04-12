@@ -17,25 +17,25 @@ namespace eval ::xolp {
   ####################
 
   ::xolp::iri::MetaClass create ::xolp::Activity \
-    -table_name xolp_activity_dimension \
-    -pretty_name "Learning Activity" \
-    -id_column activity_version_id \
-    -iri_unique false \
-    -slots {
-      ::xo::db::Attribute create title
-      ::xo::db::Attribute create description
-      ::xo::db::Attribute create package_id -datatype integer
-      ::xo::db::Attribute create package_url
-      ::xo::db::Attribute create begin_timestamp -datatype date
-      ::xo::db::Attribute create end_timestamp -datatype date
-      ::xo::db::Attribute create scd_valid_from -datatype date -default "1900-01-01"
-      ::xo::db::Attribute create scd_valid_to -datatype date -default "9999-12-31"
-    } -ad_doc {
-      Activity Dimension
-      Slowly Changing Dimension
-      Note, as the pretty_name "Activity" is already taken in OpenACS, we use "Learning Activity"
-      (although not all xolp activities necessarily have a learning effect).
-    }
+      -table_name xolp_activity_dimension \
+      -pretty_name "Learning Activity" \
+      -id_column activity_version_id \
+      -iri_unique false \
+      -slots {
+        ::xo::db::Attribute create title
+        ::xo::db::Attribute create description
+        ::xo::db::Attribute create package_id -datatype integer
+        ::xo::db::Attribute create package_url
+        ::xo::db::Attribute create begin_timestamp -datatype date
+        ::xo::db::Attribute create end_timestamp -datatype date
+        ::xo::db::Attribute create scd_valid_from -datatype date -default "1900-01-01"
+        ::xo::db::Attribute create scd_valid_to -datatype date -default "9999-12-31"
+      } -ad_doc {
+        Activity Dimension
+        Slowly Changing Dimension
+        Note, as the pretty_name "Activity" is already taken in OpenACS, we use "Learning Activity"
+        (although not all xolp activities necessarily have a learning effect).
+      }
 
   #::xo::db::require index -table xolp_activity_dimension -col "iri text_pattern_ops, scd_valid_from" -unique true
   if {[::xo::db::require exists_table xolp_activity_dimension]} {
@@ -173,11 +173,11 @@ namespace eval ::xolp {
   } {
     Updates the activity in the xolp_activity_dimension table (without creating a new version).
   } {
-      ::xo::dc dml update_activity {
-        UPDATE xolp_activity_dimension
-        SET title = :title, scd_valid_from = current_timestamp
-        WHERE activity_version_id = :activity_version_id
-      }
+    ::xo::dc dml update_activity {
+      UPDATE xolp_activity_dimension
+      SET title = :title, scd_valid_from = current_timestamp
+      WHERE activity_version_id = :activity_version_id
+    }
   }
 
   ::xolp::Activity ad_proc update {
@@ -235,7 +235,7 @@ namespace eval ::xolp {
     Associate the activity with this context (e.g. the final test in a community).
     An activity can be associated to multiple contexts.
     Within each context, the activity has a relative weight (among the other activities
-    of this context).
+                                                             of this context).
     In the standard case, the activities of a context have an equal share of the total weight.
     (E.g. when there are four activities 25% weight each).
     Of course, one can define differentiated weights.
@@ -309,12 +309,12 @@ namespace eval ::xolp {
   } {
     @return List of competency IRIs directly associated with this activity.
   } {
-      set sql "
+    set sql "
         SELECT DISTINCT competency_iri
         FROM xolp_activity_competency_bridge
         WHERE activity_iri = :activity_iri
       "
-      ::xo::dc list_of_lists dbqd..get_activity_competencies $sql
+    ::xo::dc list_of_lists dbqd..get_activity_competencies $sql
   }
 
   ::xolp::Activity ad_proc synchronize_competencies {
@@ -341,16 +341,16 @@ namespace eval ::xolp {
   #
 
   ::xolp::iri::MetaClass create ::xolp::ActivityVerb \
-    -table_name xolp_activity_verb_dimension \
-    -id_column activity_verb_id \
-    -slots {
-       ::xo::db::Attribute create title
-       ::xo::db::Attribute create description
-    } -ad_doc {
-      An activity verb may be referred to as "type of usage" of an activity object.
-      For example, a client application may want to differentiate between
-      "practicing" and "competing in" an exam.
-    }
+      -table_name xolp_activity_verb_dimension \
+      -id_column activity_verb_id \
+      -slots {
+        ::xo::db::Attribute create title
+        ::xo::db::Attribute create description
+      } -ad_doc {
+        An activity verb may be referred to as "type of usage" of an activity object.
+        For example, a client application may want to differentiate between
+        "practicing" and "competing in" an exam.
+      }
 
   ::xolp::ActivityVerb require -iri "http://dotlrn.org/xolp/activity-verbs/unknown"
 
@@ -359,9 +359,16 @@ namespace eval ::xolp {
   # This could also be realized as simple column in the activity_dimension table.
 
   ::xolp::iri::MetaClass create ::xolp::ActivityType \
-    -table_name xolp_activity_types \
-    -id_column activity_type_id
+      -table_name xolp_activity_types \
+      -id_column activity_type_id
 
 }
 
 ::xo::library source_dependent
+
+#
+# Local variables:
+#    mode: tcl
+#    tcl-indent-level: 2
+#    indent-tabs-mode: nil
+# End:

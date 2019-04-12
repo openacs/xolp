@@ -182,3 +182,10 @@ namespace eval ::xolp {
 }
 
 ::xo::library source_dependent
+
+#
+# Local variables:
+#    mode: tcl
+#    tcl-indent-level: 2
+#    indent-tabs-mode: nil
+# End:

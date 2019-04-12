@@ -16,23 +16,23 @@ namespace eval ::xolp {
   #
 
   ::xolp::iri::MetaClass create ::xolp::EvaluationSchema \
-    -table_name xolp_evalschemas \
-    -id_column evalschema_id \
-    -slots {
-      ::xo::db::Attribute create title
-      ::xo::db::Attribute create description
-      ::xo::db::Attribute create level_names
-      ::xo::db::Attribute create positive_threshold_index \
-        -default 0 \
-        -datatype integer
-    } -ad_doc {
-      An evaluation schema is used for translating
-      raw (percentage) scores into meaningful levels,
-      e.g. grades.
-    }
+      -table_name xolp_evalschemas \
+      -id_column evalschema_id \
+      -slots {
+        ::xo::db::Attribute create title
+        ::xo::db::Attribute create description
+        ::xo::db::Attribute create level_names
+        ::xo::db::Attribute create positive_threshold_index \
+            -default 0 \
+            -datatype integer
+      } -ad_doc {
+        An evaluation schema is used for translating
+        raw (percentage) scores into meaningful levels,
+        e.g. grades.
+      }
 
   ::xolp::EvaluationSchema ad_proc new_persistent_object {args} {
-      Create new persistent object
+    Create new persistent object
   } {
     array set argsarray $args
     if {[llength [array get argsarray "-level_names"]] > 0
@@ -44,18 +44,18 @@ namespace eval ::xolp {
   }
 
   ::xolp::iri::MetaClass create ::xolp::EvaluationScale \
-    -table_name xolp_evalscales \
-    -id_column evalscale_id \
-    -slots {
-      ::xo::db::Attribute create title
-      ::xo::db::Attribute create evalschema_id \
-          -datatype integer \
-          -references "xolp_evalschemas"
-      ::xo::db::Attribute create thresholds
-    } -ad_doc {
-      An evaluation scale carries the actual thresholds
-      for dividing the range from 0 to 100 into levels.
-    }
+      -table_name xolp_evalscales \
+      -id_column evalscale_id \
+      -slots {
+        ::xo::db::Attribute create title
+        ::xo::db::Attribute create evalschema_id \
+            -datatype integer \
+            -references "xolp_evalschemas"
+        ::xo::db::Attribute create thresholds
+      } -ad_doc {
+        An evaluation scale carries the actual thresholds
+        for dividing the range from 0 to 100 into levels.
+      }
 
   ::xo::db::require table xolp_evalscale_activity_bridge {
     evalscale_id {INTEGER NOT NULL REFERENCES xolp_evalscales ON DELETE CASCADE}
@@ -83,7 +83,7 @@ namespace eval ::xolp {
   }
 
   ::xolp::EvaluationScale ad_instproc initialize_loaded_object {} {
-      Initialize loaded object
+    Initialize loaded object
   } {
     :levels
   }
@@ -166,20 +166,20 @@ namespace eval ::xolp {
     set ticks [list 0 {*}${:thresholds} 100]
     for {set i 0} {$i < [llength $ticks]-1} {incr i} {
       lappend levels [::xolp::EvaluationScale::Level create [self]::$i \
-        -min [lindex $ticks $i] \
-        -max [lindex $ticks $i+1]]
+                          -min [lindex $ticks $i] \
+                          -max [lindex $ticks $i+1]]
     }
     return $levels
   }
 
   ::xotcl::Class create ::xolp::EvaluationScale::Level \
-    -parameter {
-      min:required
-      max:required
-    } -ad_doc {
-      @param min Lower boundary (inklusive)
-      @param max Upper boundary (exklusive for all but highest level)
-    }
+      -parameter {
+        min:required
+        max:required
+      } -ad_doc {
+        @param min Lower boundary (inklusive)
+        @param max Upper boundary (exklusive for all but highest level)
+      }
 
   ::xolp::EvaluationScale::Level ad_instproc name {
   } {
@@ -244,3 +244,10 @@ namespace eval ::xolp {
 }
 
 ::xo::library source_dependent
+
+#
+# Local variables:
+#    mode: tcl
+#    tcl-indent-level: 2
+#    indent-tabs-mode: nil
+# End:

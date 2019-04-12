@@ -106,21 +106,28 @@ namespace eval ::xolp::test {
 
     ad_proc random_earlier_timestamp {ts} {
         Simple function to generate from an end_timestamp a "random" begin_timestamp,
-        which is within sensible boundaries.
+      which is within sensible boundaries.
     } {
-        set ts [clock scan $ts -format "%Y-%m-%d %T z" -timezone :UTC]
-        clock format [clock add $ts -[expr {int(rand()*180)}] minute] -format "%Y-%m-%d %T z" -timezone :UTC
+      set ts [clock scan $ts -format "%Y-%m-%d %T z" -timezone :UTC]
+      clock format [clock add $ts -[expr {int(rand()*180)}] minute] -format "%Y-%m-%d %T z" -timezone :UTC
     }
 
     ad_proc -private get_testcase_for_documentation {-case:required {-index 3}} {
     } {
-        package require textutil
-        foreach t [nsv_get aa_test cases] {
-            lassign $t id desc file pkg cats inits err body _
-            if {$id eq $case && $pkg eq "xolp"} {
-                return "<pre><code>[regsub "\n\n" [textutil::undent [lindex $body 0 $index]] ""]</code></pre>"
-            }
+      package require textutil
+      foreach t [nsv_get aa_test cases] {
+        lassign $t id desc file pkg cats inits err body _
+        if {$id eq $case && $pkg eq "xolp"} {
+          return "<pre><code>[regsub "\n\n" [textutil::undent [lindex $body 0 $index]] ""]</code></pre>"
         }
+      }
     }
 
-}
+  }
+
+#
+# Local variables:
+#    mode: tcl
+#    tcl-indent-level: 2
+#    indent-tabs-mode: nil
+# End:

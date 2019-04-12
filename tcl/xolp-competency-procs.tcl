@@ -14,15 +14,15 @@ namespace eval ::xolp {
   #
 
   ::xolp::iri::MetaClass create ::xolp::Competency \
-    -table_name xolp_competency_dimension \
-    -id_column competency_id \
-    -slots {
-       ::xo::db::Attribute create title -datatype text
-       ::xo::db::Attribute create description -datatype text
-    } -ad_doc {
-      A competency is a demand-oriented human potentiality for action that can be learned
-      and involves cognitive and non-cognitive elements (see Stahl and Wild 2006).
-    }
+      -table_name xolp_competency_dimension \
+      -id_column competency_id \
+      -slots {
+        ::xo::db::Attribute create title -datatype text
+        ::xo::db::Attribute create description -datatype text
+      } -ad_doc {
+        A competency is a demand-oriented human potentiality for action that can be learned
+        and involves cognitive and non-cognitive elements (see Stahl and Wild 2006).
+      }
 
   ::xolp::Competency require -iri "http://dotlrn.org/xolp/competencies/unknown"
 
@@ -161,11 +161,11 @@ namespace eval ::xolp {
   } {
     @return List of competency IRIs attached to the given competency.
   } {
-      return [::xo::dc list get_competencies {
-          SELECT competency_iri
-          FROM xolp_competency_hierarchy_bridge
-          WHERE context_competency_iri = :competency_iri
-      }]
+    return [::xo::dc list get_competencies {
+      SELECT competency_iri
+      FROM xolp_competency_hierarchy_bridge
+      WHERE context_competency_iri = :competency_iri
+    }]
   }
 
   #
@@ -225,3 +225,10 @@ namespace eval ::xolp {
 }
 
 ::xo::library source_dependent
+
+#
+# Local variables:
+#    mode: tcl
+#    tcl-indent-level: 2
+#    indent-tabs-mode: nil
+# End:

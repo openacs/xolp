@@ -9,13 +9,13 @@ namespace eval ::xolp {}
 namespace eval ::xolp::iri {
 
   ::xotcl::Class create ::xolp::iri::MetaClass \
-    -superclass ::xo::db::Class \
-    -parameter {
-      {iri_unique true}
-    } -ad_doc {
-      This meta class provides generic methods for the
-      application classes (such as ::xolp::Activity).
-    }
+      -superclass ::xo::db::Class \
+      -parameter {
+        {iri_unique true}
+      } -ad_doc {
+        This meta class provides generic methods for the
+        application classes (such as ::xolp::Activity).
+      }
 
   ::xolp::iri::MetaClass ad_instproc init {args} {
     Initializes the application class with an iri attribute and
@@ -26,7 +26,7 @@ namespace eval ::xolp::iri {
       ::xo::db::Attribute create iri
     }
     next
-      if {[::xo::db::require exists_table ${:table_name}]} {
+    if {[::xo::db::require exists_table ${:table_name}]} {
       :log "Requiring unique index for ${:table_name}.iri"
       ::xo::db::require index -table ${:table_name} -col "iri" -unique ${:iri_unique}
     }
@@ -52,8 +52,8 @@ namespace eval ::xolp::iri {
     Require (create or update) an object for this IRI.
     @param update Whether or not to update an existing object with the provided values.
     @param return Specify kind of return value. The default will return nothing and is the fastest.
-                  Further valid values are "id" (returns the newly created indicator_id)
-                  and "object", which returns an initialized instance object of type Indicator.
+    Further valid values are "id" (returns the newly created indicator_id)
+    and "object", which returns an initialized instance object of type Indicator.
     @return Returns an id or an instantiated object.
   } {
     set object_ids [:get_object_ids -iri $iri]
@@ -89,3 +89,10 @@ namespace eval ::xolp::iri {
 }
 
 ::xo::library source_dependent
+
+#
+# Local variables:
+#    mode: tcl
+#    tcl-indent-level: 2
+#    indent-tabs-mode: nil
+# End:
