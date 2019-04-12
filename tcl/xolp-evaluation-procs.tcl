@@ -85,7 +85,7 @@ namespace eval ::xolp {
   ::xolp::EvaluationScale ad_instproc initialize_loaded_object {} {
       Initialize loaded object
   } {
-    my levels
+    :levels
   }
 
   ::xolp::EvaluationScale ad_proc get_evalscales_from_competency_iri {
@@ -123,7 +123,7 @@ namespace eval ::xolp {
   } {
     Associate the EvaluationScale with the object, if it isn't already.
   } {
-    my instvar evalscale_id
+    :instvar evalscale_id
     ::xo::dc dml associate_evalscale_to_activity "
       INSERT INTO xolp_evalscale_activity_bridge(evalscale_id, activity_version_id)
       VALUES (:evalscale_id, :activity_version_id)
@@ -136,7 +136,7 @@ namespace eval ::xolp {
   } {
     Associate the EvaluationScale with the competency, if it isn't already.
   } {
-    my instvar evalscale_id
+    :instvar evalscale_id
     ::xo::dc dml associate_evalscale_to_competency "
       INSERT INTO xolp_evalscale_competency_bridge(evalscale_id, competency_iri)
       VALUES (:evalscale_id, :competency_iri)
@@ -153,7 +153,7 @@ namespace eval ::xolp {
       ns_log Warning "Result must be within 0 and 100"
       return -1
     }
-    foreach l [my levels] {
+    foreach l [:levels] {
       if {[$l encompasses -result $result]} {return $l}
     }
     error "None of the levels encompassed the result... ($result)"
@@ -162,9 +162,8 @@ namespace eval ::xolp {
   ::xolp::EvaluationScale ad_instproc levels {} {
     Get levels based on thresholds.
   } {
-    my instvar levels
-    if {[info exists levels]} {return $levels}
-    set ticks [list 0 {*}[my thresholds] 100]
+    if {[info exists :levels]} {return ${:levels}}
+    set ticks [list 0 {*}${:thresholds} 100]
     for {set i 0} {$i < [llength $ticks]-1} {incr i} {
       lappend levels [::xolp::EvaluationScale::Level create [self]::$i \
         -min [lindex $ticks $i] \
@@ -189,7 +188,7 @@ namespace eval ::xolp {
     set level_index [namespace tail [self]]
     set scale [namespace qualifiers [self]]
     set schema [$scale evalschema_id]
-    if {![my isobject $schema]} {
+    if {![:isobject $schema]} {
       ::xo::db::Class get_instance_from_db -id $schema
     }
     set name [lindex [$schema level_names] $level_index]
@@ -215,11 +214,10 @@ namespace eval ::xolp {
     Check whether or not this level encompasses the give result value.
     @return Boolean
   } {
-    my instvar min max
-    if {$max == 100 && [::math::fuzzy::teq $max $result]} {
+    if {${:max} == 100 && [::math::fuzzy::teq ${:max} $result]} {
       return true
     }
-    return [expr {[::math::fuzzy::tge $result $min] && [::math::fuzzy::tlt $result $max]}]
+    return [expr {[::math::fuzzy::tge $result ${:min}] && [::math::fuzzy::tlt $result ${:max}]}]
   }
 
   #

@@ -52,7 +52,7 @@ namespace eval ::xolp {
     if {$evalscale eq ""} {
       error "There is no evaluation scale associated with context '$iri'."
     }
-    set result [my get_result \
+    set result [:get_result \
         -format "%s" \
         -user_id $user_id \
         -context_iri $context_iri \
@@ -131,7 +131,7 @@ namespace eval ::xolp {
   } {
     set agg [string map -nocase {best max  worst min  average avg} $policy]
     if {$agg ni "min max avg"} {error "Unknown policy."}
-    set competency_dict [my get_competencies -user_id $user_id -policy $policy]
+    set competency_dict [:get_competencies -user_id $user_id -policy $policy]
     set competency_iris [dict keys $competency_dict]
     set quoted_list [::xolp::util::ltransform -prefix "'" -suffix "'" $competency_iris]
     # TODO: Avoid the second "poor mans" union clause
@@ -187,7 +187,7 @@ namespace eval ::xolp {
   } {
       Get competency evaluation
   } {
-    set result [my get_competency_result \
+    set result [:get_competency_result \
         -format "%s" \
         -user_id $user_id \
         -competency_iri $competency_iri \

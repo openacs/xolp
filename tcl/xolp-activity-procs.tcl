@@ -84,7 +84,7 @@ namespace eval ::xolp {
     Get the most recent version of the Activity from the data base.
     @return Instance of ::xolp::Activity
   } {
-    if {![my iri_exists_in_db -iri $iri]} {error "Activity $iri does not exists"}
+    if {![:iri_exists_in_db -iri $iri]} {error "Activity $iri does not exists"}
     set activity_version_id [::xo::dc get_value select_current_activity_version "
         SELECT activity_version_id
         FROM xolp_activity_dimension
@@ -115,7 +115,7 @@ namespace eval ::xolp {
   } {
     @return IRIs of descendant activities (according to xolp_activity_hierarchy_bridge table)
   } {
-    if {![my iri_exists_in_db -iri $iri]} {error "Activity $iri does not exists"}
+    if {![:iri_exists_in_db -iri $iri]} {error "Activity $iri does not exists"}
     set sql "
       WITH RECURSIVE heritage_tree AS (
           SELECT activity_iri, 1 as depth
@@ -158,8 +158,8 @@ namespace eval ::xolp {
   } {
     @return Instance of ::xolp::Activity
   } {
-    if {[my iri_exists_in_db -iri $iri]} {
-      set latest_persisted_activity [my current -iri $iri]
+    if {[:iri_exists_in_db -iri $iri]} {
+      set latest_persisted_activity [:current -iri $iri]
       if {[::xo::dc get_value is_newer "SELECT '$scd_valid_from' > '[$latest_persisted_activity scd_valid_to]'"] eq f} {
         error "Activity $iri is already registered.\n$scd_valid_from < [$latest_persisted_activity scd_valid_to]\nUse 'update' (or 'require') instead... "
       }
@@ -187,7 +187,7 @@ namespace eval ::xolp {
     Updates the activity in the xolp_activity_dimension table by creating a new version.
   } {
     ::xo::dc transaction {
-      set old [my current -iri $iri]
+      set old [:current -iri $iri]
       set scd_valid_to_new [::xo::dc get_value roll-step1 "
         UPDATE xolp_activity_dimension
         SET scd_valid_to = NOW()
@@ -197,7 +197,7 @@ namespace eval ::xolp {
       array set argarray $args
       set argarray(-iri) $iri
       set argarray(-scd_valid_from) $scd_valid_to_new
-      set new [my new_persistent_object {*}[array get argarray]]
+      set new [:new_persistent_object {*}[array get argarray]]
     }
     return $new
   }
@@ -218,8 +218,8 @@ namespace eval ::xolp {
   } {
     @see ::xolp::Activity->add_to_context
   } {
-    [my info class] add_to_context \
-        -activity_iri [my iri] \
+    [:info class] add_to_context \
+        -activity_iri ${:iri} \
         -context_iri $context_iri \
         -weight_numerator $weight_numerator \
         -weight_denominator $weight_denominator
@@ -323,8 +323,8 @@ namespace eval ::xolp {
     Update indicators to reflect their respective activities' current competencies.
   } {
     ::xo::dc transaction {
-      set activity_version_ids [my get_object_ids -iri $activity_iri]
-      set competency_iris [my get_competencies -activity_iri $activity_iri]
+      set activity_version_ids [:get_object_ids -iri $activity_iri]
+      set competency_iris [:get_competencies -activity_iri $activity_iri]
       set competency_set_id [::xolp::Competency require_set -competency_iris $competency_iris]
       set sql "
         UPDATE xolp_indicator_facts

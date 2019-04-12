@@ -21,15 +21,14 @@ namespace eval ::xolp::iri {
     Initializes the application class with an iri attribute and
     an accompanying (usually unique) index.
   } {
-    my superclass ::xo::db::Object
-    my slots {
+    :superclass ::xo::db::Object
+    :slots {
       ::xo::db::Attribute create iri
     }
     next
-    if {[::xo::db::require exists_table [my table_name]]} {
-      my log "Requiring unique index for [my table_name].iri"
-      #::xo::db::require index -table [my table_name] -col "iri text_pattern_ops" -unique [my iri_unique]
-      ::xo::db::require index -table [my table_name] -col "iri" -unique [my iri_unique]
+      if {[::xo::db::require exists_table ${:table_name}]} {
+      :log "Requiring unique index for ${:table_name}.iri"
+      ::xo::db::require index -table ${:table_name} -col "iri" -unique ${:iri_unique}
     }
   }
 
@@ -40,8 +39,8 @@ namespace eval ::xolp::iri {
     For versioned objects like ::xolp::Activity, multiple ACS Object IDs may be returned.
     @return a list of ACS Object IDs
   } {
-    my instvar id_column table_name
-    ::xo::dc list_of_lists [my qn get_object_ids] "SELECT $id_column FROM $table_name WHERE iri = :iri ORDER BY $id_column DESC"
+    :instvar id_column table_name
+    ::xo::dc list_of_lists get_object_ids "SELECT $id_column FROM $table_name WHERE iri = :iri ORDER BY $id_column DESC"
   }
 
   ::xolp::iri::MetaClass ad_instproc require {
@@ -57,10 +56,10 @@ namespace eval ::xolp::iri {
                   and "object", which returns an initialized instance object of type Indicator.
     @return Returns an id or an instantiated object.
   } {
-    set object_ids [my get_object_ids -iri $iri]
+    set object_ids [:get_object_ids -iri $iri]
     if {$object_ids eq ""} {
       # Newly created object
-      set instance [my new_persistent_object -iri $iri {*}$args]
+      set instance [:new_persistent_object -iri $iri {*}$args]
       set object_id [$instance object_id]
     } else {
       # Reused object
@@ -69,7 +68,7 @@ namespace eval ::xolp::iri {
         set instance [::xo::db::Class get_instance_from_db -id $object_id]
       }
       if {$update} {
-        #my log "[self] with IRI $iri already exists. Updating properties of latest..."
+        #:log "[self] with IRI $iri already exists. Updating properties of latest..."
         $instance configure {*}$args
         $instance save
         set instance [::xo::db::Class get_instance_from_db -id $object_id]
@@ -83,7 +82,7 @@ namespace eval ::xolp::iri {
   } {
     Delete all objects identified by this IRI, including any object versions (if iri_unique false).
   } {
-    my instvar table_name
+    :instvar table_name
     return [::xo::dc dml delete "DELETE FROM $table_name WHERE iri = :iri"]
   }
 

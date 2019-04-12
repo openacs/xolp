@@ -42,7 +42,7 @@ namespace eval ::xolp {
   ::xolp::Indicator ad_proc essential_attributes {} {
       Return essential attributes
   } {
-    set attributes [::xolp::util::lremove [my info parameter] {
+    set attributes [::xolp::util::lremove [:info parameter] {
       indicator_id begin_date_id end_date_id begin_time_id end_time_id storage_date_id storage_time_id
     }]
     return $attributes
@@ -52,7 +52,7 @@ namespace eval ::xolp {
       Init class
   } {
     next
-    my destroy_on_cleanup
+    :destroy_on_cleanup
   }
 
   ::xo::db::require table xolp_indicator_facts {
@@ -116,7 +116,7 @@ namespace eval ::xolp {
   } {
       Checks for objects existance in the database
   } {
-    ::xo::dc get_value [my qn select_object] "select 1 from xolp_indicator_facts where indicator_id = :indicator_id" 0
+    ::xo::dc get_value select_object {select 1 from xolp_indicator_facts where indicator_id = :indicator_id} 0
   }
 
   ::xolp::Indicator ad_proc delete {
@@ -127,9 +127,9 @@ namespace eval ::xolp {
       Delete object
   } {
     if {$indicator_id ne ""} {
-      ::xo::dc dml [my qn delete] "DELETE FROM xolp_indicator_facts WHERE indicator_id = :indicator_id"
+      ::xo::dc dml delete {DELETE FROM xolp_indicator_facts WHERE indicator_id = :indicator_id}
     } elseif {$user_id ne "" and $activity_version_ids ne ""} {
-      ::xo::dc dml [my qn delete] "DELETE FROM xolp_indicator_facts WHERE user_id = :user_ids AND activity_version_id = :activity_version_ids"
+      ::xo::dc dml delete {DELETE FROM xolp_indicator_facts WHERE user_id = :user_ids AND activity_version_id = :activity_version_ids}
     } else {
       error "Invalid arguments provided..."
     }
@@ -187,7 +187,7 @@ namespace eval ::xolp {
     }
     set properties [::xolp::util::lremove $properties indicator_id]
     set allowed_properties {user_id result_percentage duration}
-    lappend allowed_properties {*}[my set datetime_properties]
+    lappend allowed_properties {*}${:datetime_properties}
 
     foreach p $allowed_properties {
       if {$p in $properties} {lappend ordered_properties $p}
@@ -236,7 +236,7 @@ namespace eval ::xolp {
     }
     # Dimension: Time / Date
     foreach time_filter {begin_time_constraint begin_date_constraint end_time_constraint end_date_constraint storage_time_constraint storage_date_constraint} {
-      if {[set ${time_filter}] ne "" || [::xolp::util::lcontains $ordered_properties [my set datetime_properties]] } {
+      if {[set ${time_filter}] ne "" || [::xolp::util::lcontains $ordered_properties ${:datetime_properties}] } {
         set dimension_table xolp_[string map {"constraint" "dimension"} ${time_filter}]
         set dimension_table_pk [string map {"constraint" "id"} ${time_filter}]
         lappend dimensions "INNER JOIN $dimension_table USING ($dimension_table_pk)"
@@ -268,7 +268,7 @@ namespace eval ::xolp {
       $where_clause
       $group_by_clause
     "
-    set indicators [::xo::dc list_of_lists [my qn select_indicators] $sql]
+    set indicators [::xo::dc list_of_lists select_indicators $sql]
     set result_dict {}
     if {[llength $ordered_properties] <= 1} {
       # We only have one value
@@ -291,8 +291,8 @@ namespace eval ::xolp {
     {-indicator_id:required}
   } {
   } {
-    ::xo::dc 1row [my qn fetch] "SELECT * FROM xolp_indicator_facts WHERE indicator_id = :indicator_id"
-    set attributes [list indicator_id {*}[my essential_attributes]]
+    ::xo::dc 1row fetch {SELECT * FROM xolp_indicator_facts WHERE indicator_id = :indicator_id}
+    set attributes [list indicator_id {*}[:essential_attributes]]
     foreach a $attributes {lappend arguments -$a [set $a]}
     return [::xolp::Indicator new {*}$arguments]
   }
@@ -336,24 +336,24 @@ namespace eval ::xolp {
         -update false]
       set activity_verb_id [$activity_verb set activity_verb_id]
     }
-    set attributes [my essential_attributes]
+    set attributes [:essential_attributes]
     set bind_attributes [::xolp::util::ltransform $attributes]
     set sql "INSERT INTO xolp_indicator_facts ([join $attributes ,]) VALUES ([join $bind_attributes ,])"
     switch -- $return {
       "id" {
         append sql " RETURNING indicator_id"
-        ::xo::dc 1row [my qn insert_return_id] $sql
+        ::xo::dc 1row insert_return_id $sql
         return $indicator_id
       }
       object {
         set attributes [list indicator_id {*}$attributes]
         append sql " RETURNING [join $attributes ,]"
-        ::xo::dc 1row [my qn insert_return_all] $sql
+        ::xo::dc 1row insert_return_all $sql
         foreach a $attributes {lappend arguments -$a [set $a]}
         return [::xolp::Indicator new {*}$arguments]
       }
       default {
-        ::xo::dc dml [my qn insert] $sql
+        ::xo::dc dml insert $sql
         return
       }
     }
@@ -363,12 +363,12 @@ namespace eval ::xolp {
   ::xolp::Indicator ad_instproc save {} {
       Save object
   } {
-    set attributes [[my info class] essential_attributes]
-    my instvar indicator_id {*}$attributes
+    set attributes [[:info class] essential_attributes]
+    :instvar indicator_id {*}$attributes
     foreach a $attributes {
       lappend attribute_update_sql "$a = :$a"
     }
-    ::xo::dc dml [my qn update] "
+    ::xo::dc dml update "
       UPDATE
         xolp_indicator_facts
       SET

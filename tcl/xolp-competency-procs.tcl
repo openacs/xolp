@@ -33,9 +33,9 @@ namespace eval ::xolp {
     @return competency_set_id
   } {
     if {[llength $competency_iris] eq 0} {error "Empty list provided."}
-    if {![my all_exist -competency_iris $competency_iris]} {error "List contains unknown competencies."}
+    if {![:all_exist -competency_iris $competency_iris]} {error "List contains unknown competencies."}
     ::xo::dc transaction {
-      set set_id [my get_set_id -competency_iris $competency_iris]
+      set set_id [:get_set_id -competency_iris $competency_iris]
       if {$set_id eq ""} {
         set quoted_list [::xolp::util::ltransform -prefix "'" -suffix "'" $competency_iris]
         set set_id [::xo::dc get_value insert_set "
