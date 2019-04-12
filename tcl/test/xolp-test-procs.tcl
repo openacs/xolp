@@ -1218,6 +1218,7 @@ aa_register_case \
       Generate 10,000 activities.
     } {
         aa_run_with_teardown \
+            -rollback \
             -test_code {
                 aa_export_vars {activity_iris activity_version_ids}
                 set amount 10000
@@ -1240,6 +1241,7 @@ aa_register_case \
       and 5000 activities.
     } {
         aa_run_with_teardown \
+            -rollback \
             -test_code {
                 aa_export_vars {user_ids activity_iris}
                 set activity_version_ids [db_list -cache_key "xolp_test_activity_version_ids" _ "select activity_version_id from xolp_activity_dimension limit 5000"]
