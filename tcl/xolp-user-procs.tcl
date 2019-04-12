@@ -78,20 +78,42 @@ namespace eval ::xolp {
   } {
     set agg [string map -nocase {best max  worst min  average avg} $policy]
     if {$agg ni "min max avg"} {error "Unknown policy."}
-    set sql "
-      WITH competencies AS (
-        SELECT DISTINCT competency_id
-        FROM xolp_competency_set_bridge
-        WHERE competency_set_id IN (
-          SELECT DISTINCT competency_set_id
-          FROM xolp_indicator_facts f
-          WHERE user_id = :user_id
-        )
-        AND competency_set_id <> 1
-      )
-      SELECT iri, xolp_weighted_competency_result(:user_id,iri,:agg)
-      FROM xolp_competency_dimension INNER JOIN competencies USING (competency_id)
-    "
+    # apisano: this was the original query implementation, which was
+    # failing xolp.user_get_competencies test case. The reason is
+    # indicator_facts are created with a competency_set_id of 1 by
+    # default and therefore will always be excluded from the
+    # results. I am not sure whether it makes sense to specify the
+    # competentcy_set_id on the indicator_facts at all, as one fact
+    # such as an exam might be related with multiple competency
+    # sets...
+    # set sql "
+    #   WITH competencies AS (
+    #     SELECT DISTINCT competency_id
+    #     FROM xolp_competency_set_bridge
+    #     WHERE competency_set_id IN (
+    #       SELECT DISTINCT competency_set_id
+    #       FROM xolp_indicator_facts f
+    #       WHERE user_id = :user_id
+    #     )
+    #     AND competency_set_id <> 1
+    #   )
+    #   SELECT iri, xolp_weighted_competency_result(:user_id,iri,:agg)
+    #   FROM xolp_competency_dimension INNER JOIN competencies USING (competency_id)
+    # "
+    set sql {
+        SELECT iri, xolp_weighted_competency_result(:user_id,iri,:agg)
+        from (
+              select distinct cd.iri
+                from xolp_competency_dimension cd,
+                     xolp_activity_competency_bridge acb,
+                     xolp_activity_dimension ad,
+                     xolp_indicator_facts if
+               where cd.iri = acb.competency_iri
+                 and acb.activity_iri = ad.iri
+                 and ad.activity_version_id = if.activity_version_id
+                 and if.user_id = :user_id
+              ) as competencies
+    }
     set competencies [::xo::dc list_of_lists get_competencies $sql]
     set result_dict ""
     foreach c $competencies {
