@@ -55,27 +55,10 @@ namespace eval ::xolp::test {
     }
 
     ad_proc create_test_users {{-nr 1}} {} {
-      set user_ids {}
+      set user_ids [list]
       for {set i 1} {$i <= $nr} {incr i} {
-        set uuid [uuid::uuid generate]
-        set email test.xolp.${uuid}@example.com
-        set test_user ""
-        if {![apm_package_installed_p "tlf-kernel"]} {
-          # Normal Mode
-          set test_user [auth::create_user -last_name XOLPTEST -first_names $uuid -email $email]
-        }
-        if {[dict exists $test_user user_id] && [dict get $test_user user_id] ne {}} {
-          lappend user_ids [dict get $test_user user_id]
-        } else {
-          # auth::create_user failed for some reason (e.g. its 'broken' on Learn@WU).
-          # Let's give it another try using the low level function.
-          # email first_names last_name password password_question password_answer url email_verified_p member_state user_id username authority_id screen_name
-          set uid [auth::create_local_account_helper $email $uuid XOLPTEST password password_question password_answer http://example.com t approved "" $email "" ""]
-          if {$uid ne 0} {lappend user_ids $uid}
-        }
-      }
-      if {$user_ids eq ""} {
-        ns_log Error "Failed to create a test user."
+        set user [acs::test::user::create]
+        lappend user_ids [dict get $user user_id]
       }
       return $user_ids
     }
