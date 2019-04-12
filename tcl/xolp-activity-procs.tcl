@@ -153,7 +153,7 @@ namespace eval ::xolp {
     {-package_url ""}
     {-begin_timestamp ""}
     {-end_timestamp ""}
-    {-scd_valid_from "NOW()"}
+    {-scd_valid_from "current_timespamp"}
     args
   } {
     @return Instance of ::xolp::Activity
@@ -190,7 +190,7 @@ namespace eval ::xolp {
       set old [:current -iri $iri]
       set scd_valid_to_new [::xo::dc get_value roll-step1 "
         UPDATE xolp_activity_dimension
-        SET scd_valid_to = NOW()
+        SET scd_valid_to = current_timestamp
         WHERE activity_version_id = [$old activity_version_id]
         RETURNING scd_valid_to + INTERVAL '0.000001' SECOND
       "]
