@@ -1478,7 +1478,7 @@ aa_register_case \
                                 -user_id [ad_conn user_id] \
                                 -policy "average" \
                                 -competency_iri "http://example.com/competencies/programming/tcl"]
-                aa_equals "User has 72% of competency 'Tcl Programming' (average)" $result 51.00
+                aa_equals "User has 51% of competency 'Tcl Programming' (average)" $result 51.00
                 set level [::xolp::User get_competency_evaluation \
                                -user_id [ad_conn user_id] \
                                -policy "average" \
@@ -1489,12 +1489,12 @@ aa_register_case \
                                 -user_id [ad_conn user_id] \
                                 -policy "worst" \
                                 -competency_iri "http://example.com/competencies/programming/tcl"]
-                aa_equals "User has 72% of competency 'Tcl Programming' (worst)" $result 30.00
+                aa_equals "User has 30% of competency 'Tcl Programming' (worst)" $result 30.00
                 set level [::xolp::User get_competency_evaluation \
                                -user_id [ad_conn user_id] \
                                -policy "worst" \
                                -competency_iri "http://example.com/competencies/programming/tcl"]
-                aa_equals "User is a senior Tcl dev. (worst)" [$level name] "junior"
+                aa_equals "User is a junior Tcl dev. (worst)" [$level name] "junior"
 
                 #
                 # Database Design
