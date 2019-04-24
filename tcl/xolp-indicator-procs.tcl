@@ -323,7 +323,7 @@ namespace eval ::xolp {
                                    -update false \
                                    -return id]
     }
-    set storage_timestamp [dt_systime]
+    set storage_timestamp [clock format [clock seconds] -format "%Y-%m-%d %H:%M:%S"]
     if {$end_timestamp eq ""} {
       set end_timestamp $storage_timestamp
     }
