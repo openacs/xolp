@@ -35,7 +35,7 @@ namespace eval ::xolp::util {
         return $list
     }
 
-    #if {$generate_iri_path} {set iri "${iri}:[uuid::uuid generate]"}
+    #if {$generate_iri_path} {set iri "${iri}:[ns_uuid]"}
 }
 
 ######################
@@ -49,7 +49,7 @@ namespace eval ::xolp::test {
     ad_proc create_test_iris {{-nr 1}} {} {
       set iris {}
       for {set i 1} {$i <= $nr} {incr i} {
-        lappend iris "xolp:test:[uuid::uuid generate]"
+        lappend iris "xolp:test:[ns_uuid]"
       }
       return $iris
     }
