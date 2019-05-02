@@ -5,8 +5,6 @@
   @creation-date 2017
 }
 
-package require uuid
-
 #################
 #               #
 #   Utilities   #
