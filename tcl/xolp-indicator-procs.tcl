@@ -114,7 +114,7 @@ namespace eval ::xolp {
   ::xolp::Indicator ad_proc exists_in_db {
     {-indicator_id:required}
   } {
-    Checks for objects existance in the database
+    Checks for objects existence in the database
   } {
     ::xo::dc get_value select_object {select 1 from xolp_indicator_facts where indicator_id = :indicator_id} 0
   }
