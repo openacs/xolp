@@ -349,7 +349,7 @@ aa_register_component \
         set activity [::xolp::Activity current -iri $iri]
         set activity_version_id [$activity activity_version_id]
         set end_timestamp [::xo::dc get_value now {select current_timestamp(0) - cast('1 hour' as interval)}]
-        set result_numerator [format "%.0f" [expr {[random] * 100}]]
+        set result_numerator [format "%.0f" [expr {[util::random] * 100}]]
         set indicator [::xolp::Indicator insert \
                            -activity_version_id $activity_version_id \
                            -begin_timestamp $end_timestamp \
@@ -371,7 +371,7 @@ aa_register_component \
         aa_export_vars {iri indicator}
         set activity [::xolp::Activity current -iri $iri]
         set activity_version_id [$activity activity_version_id]
-        set result_numerator [format "%.0f" [expr {[random] * 100}]]
+        set result_numerator [format "%.0f" [expr {[util::random] * 100}]]
         set indicator [::xolp::Indicator insert \
                            -user_id [ad_conn user_id] \
                            -activity_version_id $activity_version_id \
@@ -403,7 +403,7 @@ aa_register_component \
                 -activity_version_id [$activity activity_version_id] \
                 -begin_timestamp "2014-01-04 00:00:00" \
                 -end_timestamp "2014-01-03 00:00:00" \
-                -result_numerator [format "%.0f" [expr {[random] * 1000}]] \
+                -result_numerator [format "%.0f" [expr {[util::random] * 1000}]] \
                 -competency_set_id 1 \
                 -result_denominator 1000 \
                 -return object
