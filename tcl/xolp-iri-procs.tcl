@@ -59,7 +59,7 @@ namespace eval ::xolp::iri {
     set object_ids [:get_object_ids -iri $iri]
     if {$object_ids eq ""} {
       # Newly created object
-      set instance [:new_persistent_object -iri $iri {*}$args]
+      set instance [:new_persistent_object {*}$args -iri $iri]
       set object_id [$instance object_id]
     } else {
       # Reused object

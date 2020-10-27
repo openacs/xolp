@@ -194,10 +194,8 @@ namespace eval ::xolp {
         WHERE activity_version_id = [$old activity_version_id]
         RETURNING scd_valid_to + INTERVAL '0.000001' SECOND
       "]
-      array set argarray $args
-      set argarray(-iri) $iri
-      set argarray(-scd_valid_from) $scd_valid_to_new
-      set new [:new_persistent_object {*}[array get argarray]]
+      lappend args {*}[list -iri "$iri" -scd_valid_from "$scd_valid_to_new"]
+      set new [:new_persistent_object {*}$args]
     }
     return $new
   }

@@ -21,6 +21,7 @@ aa_register_component \
     "Create an Activity Verb" {
         aa_export_vars {activity_verb}
         set activity_verb [::xolp::ActivityVerb new_persistent_object \
+                               -package_id [apm_package_id_from_key "acs-automated-testing"] \
                                -iri "https://example.com/verb/perform" \
                                -title [ad_generate_random_string] \
                                -description [ad_generate_random_string]]
@@ -96,6 +97,7 @@ aa_register_component \
     "Create an Evaluation Schema" {
         aa_export_vars {evaluation_schema}
         catch {::xolp::EvaluationSchema new_persistent_object \
+                   -package_id [apm_package_id_from_key "acs-automated-testing"] \
                    -iri "https://example.com/xyz" \
                    -title [ad_generate_random_string] \
                    -description [ad_generate_random_string] \
@@ -107,6 +109,7 @@ aa_register_component \
         }
 
         set evaluation_schema [::xolp::EvaluationSchema new_persistent_object \
+                                   -package_id [apm_package_id_from_key "acs-automated-testing"] \
                                    -iri "https://example.com/abcd" \
                                    -title [ad_generate_random_string] \
                                    -description [ad_generate_random_string] \
@@ -189,6 +192,7 @@ aa_register_component \
         aa_export_vars {evaluation_schema evaluation_scale}
         set evaluation_scale_title "Test Evaluation Scale 60-70-80-90"
         set evaluation_scale [::xolp::EvaluationScale new_persistent_object \
+                                  -package_id [apm_package_id_from_key "acs-automated-testing"] \
                                   -title $evaluation_scale_title \
                                   -evalschema_id [$evaluation_schema object_id] \
                                   -thresholds "60 70 80 90"]
@@ -210,6 +214,7 @@ aa_register_component \
         set evaluation_scale_title "Test Evaluation Scale Bad/Good"
         set evaluation_scale [::xolp::EvaluationScale require \
                                   -iri "http://example.com/" \
+                                  -package_id [apm_package_id_from_key "acs-automated-testing"] \
                                   -title "Ooops" \
                                   -thresholds "1 99"]
         aa_true "Persisting a new evaluation scale succeeded" {
@@ -224,6 +229,7 @@ aa_register_component \
 
         set evaluation_scale [::xolp::EvaluationScale require \
                                   -iri "http://example.com/" \
+                                  -package_id [apm_package_id_from_key "acs-automated-testing"] \
                                   -title $evaluation_scale_title \
                                   -thresholds "50"]
         aa_true "Persisting a new evaluation scale succeeded" {
@@ -269,6 +275,7 @@ aa_register_component \
         set iri "http://example.com/a1"
         set activity_title "Test Activity"
         set activity [::xolp::Activity new_persistent_object \
+                          -package_id [apm_package_id_from_key "acs-automated-testing"] \
                           -iri $iri -title "Oopsy.."]
         set object_id [$activity object_id]
         $activity destroy
@@ -288,6 +295,7 @@ aa_register_component \
         set new_title "New Title [ad_generate_random_string]"
         set activity [::xolp::Activity update \
                           -iri $iri \
+                          -package_id [apm_package_id_from_key "acs-automated-testing"] \
                           -title $new_title]
         aa_log "Newly inserted Activity Dimension row: $activity"
         aa_true "Persisting a new Activity succeeded" {
@@ -306,7 +314,9 @@ aa_register_component \
         aa_export_vars {activity}
         set activity_title "Test Activity"
         set activity [::xolp::Activity require \
-                          -iri "http://example.com/a1" -title "Oopsi.."]
+                          -iri "http://example.com/a1" \
+                          -package_id [apm_package_id_from_key "acs-automated-testing"] \
+                          -title "Oopsi.."]
         aa_true "Persisting a new Activity succeeded" {
             [info exists activity]
             && [::xotcl::Object isobject $activity]
@@ -318,6 +328,7 @@ aa_register_component \
 
         set activity [::xolp::Activity require \
                           -iri "http://example.com/a1" \
+                          -package_id [apm_package_id_from_key "acs-automated-testing"] \
                           -title $activity_title]
         aa_true "Persisting a new Activity succeeded" {
             [info exists activity]
@@ -481,13 +492,13 @@ aa_register_init_class \
                       $u1 $c1 $a3 "xolp:test:v:competed"  "2016-10-03 09:45:00" "2016-10-03 10:00:00"    0   100 \
                       $u2 $c2 $a3 "xolp:test:v:competed"  "2016-10-04 13:00:00" "2016-10-04 14:00:00"   87   100 \
                      ]
-
+        set package_id [apm_package_id_from_key "acs-automated-testing"]
         foreach {user_id context_iri activity_iri verb_iri begin_timestamp end_timestamp rn rd} $data {
-            ::xolp::Activity require -update false -iri $context_iri
-            set activity [::xolp::Activity require -update false -iri $activity_iri]
+            ::xolp::Activity require -update false -iri $context_iri -package_id $package_id
+            set activity [::xolp::Activity require -update false -iri $activity_iri -package_id $package_id]
             $activity add_to_context -context_iri $context_iri
             set activity_version_id [$activity activity_version_id]
-            set verb [::xolp::ActivityVerb require -update false -iri $verb_iri]
+            set verb [::xolp::ActivityVerb require -update false -iri $verb_iri -package_id $package_id]
             set activity_verb_id [$verb activity_verb_id]
             ::xolp::Indicator insert \
                 -user_id $user_id \
@@ -919,7 +930,10 @@ aa_register_case \
                 #             be interesting.
 
                 set activity_iri "http://example.com/practice1"
-                set activity_version_id [::xolp::Activity require -iri $activity_iri -return id]
+                set activity_version_id [::xolp::Activity require \
+                    -iri $activity_iri \
+                    -return id \
+                    -package_id [apm_package_id_from_key "acs-automated-testing"]]
 
                 # Weekend practicing
                 ::xolp::Indicator insert \
@@ -994,13 +1008,31 @@ aa_register_case \
                 lassign [list [ad_conn user_id] {*}[::xolp::test::create_test_users -nr 5]] u1 u2 u3 u4 u5 u6
 
                 # Setup the course, add schema and scale.
-                set c1 [::xolp::Activity require -iri "http://example.com/course1" -return id]
-                set evalschema_id [::xolp::EvaluationSchema require -iri "https://dotlrn.org/xolp/evaluation-schemas/at-five-to-one" -update false -return id]
-                set evalscale [::xolp::EvaluationScale require -iri "http://example.com/evalscales/course1" -evalschema_id $evalschema_id -thresholds "60 70 80 90"]
+                set c1 [::xolp::Activity require \
+                    -iri "http://example.com/course1" \
+                    -return id \
+                    -package_id [apm_package_id_from_key "acs-automated-testing"]]
+                set evalschema_id [::xolp::EvaluationSchema require \
+                    -iri "https://dotlrn.org/xolp/evaluation-schemas/at-five-to-one" \
+                    -update false \
+                    -return id \
+                    -package_id [apm_package_id_from_key "acs-automated-testing"]]
+                set evalscale [::xolp::EvaluationScale require \
+                    -iri "http://example.com/evalscales/course1" \
+                    -return id \
+                    -package_id [apm_package_id_from_key "acs-automated-testing"] \
+                    -evalschema_id $evalschema_id \
+                    -thresholds "60 70 80 90"]
                 $evalscale add_to_activity -activity_version_id $c1
 
-                set c1t1 [::xolp::Activity require -iri "http://example.com/course1/test1" -return id]
-                set c1t2 [::xolp::Activity require -iri "http://example.com/course1/test2" -return id]
+                set c1t1 [::xolp::Activity require \
+                    -iri "http://example.com/course1/test1" \
+                    -return id \
+                    -package_id [apm_package_id_from_key "acs-automated-testing"]]
+                set c1t2 [::xolp::Activity require \
+                    -iri "http://example.com/course1/test2" \
+                    -return id \
+                    -package_id [apm_package_id_from_key "acs-automated-testing"]]
 
                 # The final test performance counts 50% overall.
                 ::xolp::Activity add_to_context \
@@ -1019,7 +1051,9 @@ aa_register_case \
 
                 # We create a virtual "groups" context to collect all (alternative) groups.
                 # This allows for easier weighting (otherwise course1's subactivities would add up to more than 100%
-                set c1g     [::xolp::Activity require -iri "http://example.com/course1/groups" -return id]
+                set c1g     [::xolp::Activity require -iri "http://example.com/course1/groups" \
+                    -return id \
+                    -package_id [apm_package_id_from_key "acs-automated-testing"]]
                 ::xolp::Activity add_to_context \
                     -activity_iri "http://example.com/course1/groups" \
                     -context_iri "http://example.com/course1" \
@@ -1027,12 +1061,24 @@ aa_register_case \
                     -weight_denominator 100
 
                 # We create the alternative groups and their tasks.
-                set c1g1    [::xolp::Activity require -iri "http://example.com/course1/group1" -return id]
-                set c1g1p1  [::xolp::Activity require -iri "http://example.com/course1/group1/presentation1" -return id]
-                set c1g1p2  [::xolp::Activity require -iri "http://example.com/course1/group1/presentation2" -return id]
-                set c1g2    [::xolp::Activity require -iri "http://example.com/course1/group2" -return id]
-                set c1g2d   [::xolp::Activity require -iri "http://example.com/course1/group2/deliverable" -return id]
-                set c1g2p   [::xolp::Activity require -iri "http://example.com/course1/group2/presentation" -return id]
+                set c1g1    [::xolp::Activity require -iri "http://example.com/course1/group1" \
+                    -return id \
+                    -package_id [apm_package_id_from_key "acs-automated-testing"]]
+                set c1g1p1  [::xolp::Activity require -iri "http://example.com/course1/group1/presentation1" \
+                    -return id \
+                    -package_id [apm_package_id_from_key "acs-automated-testing"]]
+                set c1g1p2  [::xolp::Activity require -iri "http://example.com/course1/group1/presentation2" \
+                    -return id \
+                    -package_id [apm_package_id_from_key "acs-automated-testing"]]
+                set c1g2    [::xolp::Activity require -iri "http://example.com/course1/group2" \
+                    -return id \
+                    -package_id [apm_package_id_from_key "acs-automated-testing"]]
+                set c1g2d   [::xolp::Activity require -iri "http://example.com/course1/group2/deliverable" \
+                    -return id \
+                    -package_id [apm_package_id_from_key "acs-automated-testing"]]
+                set c1g2p   [::xolp::Activity require -iri "http://example.com/course1/group2/presentation" \
+                    -return id \
+                    -package_id [apm_package_id_from_key "acs-automated-testing"]]
 
                 # The first presentation of each group counts not as much as the second one.
                 ::xolp::Activity add_to_context \
@@ -1225,6 +1271,7 @@ aa_register_case \
                 for {set i 1} {$i <= $amount} {incr i} {
                     set activity_iri [::xolp::test::create_test_iris]
                     set activity [::xolp::Activity new_persistent_object \
+                                      -package_id [apm_package_id_from_key "acs-automated-testing"] \
                                       -iri $activity_iri \
                                       -title "Activity $i"]
                     lappend activity_version_ids [$activity activity_version_id]
