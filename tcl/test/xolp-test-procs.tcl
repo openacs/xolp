@@ -526,8 +526,9 @@ aa_register_init_class \
         Import some well-defined competency test data
     } {
         aa_export_vars {exam1 exam2}
-        set exam1 [::xolp::Activity require -iri "http://example.com/tcl-exam" -return id]
-        set exam2 [::xolp::Activity require -iri "http://example.com/openacs-exam" -return id]
+        set package_id [apm_package_id_from_key "acs-automated-testing"]
+        set exam1 [::xolp::Activity require -iri "http://example.com/tcl-exam" -return id -package_id $package_id]
+        set exam2 [::xolp::Activity require -iri "http://example.com/openacs-exam" -return id -package_id $package_id]
 
         ::xolp::Competency require -iri "http://example.com/competencies/abstract-thinking"
         ::xolp::Competency require -iri "http://example.com/competencies/software-development"
