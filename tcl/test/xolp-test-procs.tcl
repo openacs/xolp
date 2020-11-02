@@ -530,12 +530,12 @@ aa_register_init_class \
         set exam1 [::xolp::Activity require -iri "http://example.com/tcl-exam" -return id -package_id $package_id]
         set exam2 [::xolp::Activity require -iri "http://example.com/openacs-exam" -return id -package_id $package_id]
 
-        ::xolp::Competency require -iri "http://example.com/competencies/abstract-thinking"
-        ::xolp::Competency require -iri "http://example.com/competencies/software-development"
-        ::xolp::Competency require -iri "http://example.com/competencies/computational-thinking"
-        ::xolp::Competency require -iri "http://example.com/competencies/fullstack-webdev"
-        ::xolp::Competency require -iri "http://example.com/competencies/database-design"
-        ::xolp::Competency require -iri "http://example.com/competencies/programming/tcl"
+        ::xolp::Competency require -iri "http://example.com/competencies/abstract-thinking" -package_id $package_id
+        ::xolp::Competency require -iri "http://example.com/competencies/software-development" -package_id $package_id
+        ::xolp::Competency require -iri "http://example.com/competencies/computational-thinking" -package_id $package_id
+        ::xolp::Competency require -iri "http://example.com/competencies/fullstack-webdev" -package_id $package_id
+        ::xolp::Competency require -iri "http://example.com/competencies/database-design" -package_id $package_id
+        ::xolp::Competency require -iri "http://example.com/competencies/programming/tcl" -package_id $package_id
 
         ::xolp::Competency add_to_competency \
             -competency_iri "http://example.com/competencies/computational-thinking" \
