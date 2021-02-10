@@ -59,6 +59,14 @@ namespace eval ::xolp {
     "
   }
 
+  ::xo::db::require index \
+      -table xolp_activity_hierarchy_bridge \
+      -col activity_iri
+
+  ::xo::db::require index \
+      -table xolp_activity_hierarchy_bridge \
+      -col context_iri
+
   ::xolp::Activity ad_proc delete {
     -iri:required
   } {

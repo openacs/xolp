@@ -188,6 +188,14 @@ namespace eval ::xolp {
     WHERE iri = 'http://dotlrn.org/xolp/competencies/unknown';
   }
 
+  ::xo::db::require index \
+      -table xolp_competency_set_bridge \
+      -col competency_set_id
+
+  ::xo::db::require index \
+      -table xolp_competency_set_bridge \
+      -col competency_id
+
   #
   # Bridge: Connect Activities to Competencies
   #
