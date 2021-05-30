@@ -95,7 +95,18 @@ namespace eval ::xolp {
   ::xo::db::require index -table xolp_indicator_facts -col storage_date_id
   ::xo::db::require index -table xolp_indicator_facts -col storage_time_id
 
+  #
+  # The following code - which is already PostgreSQL-specifc -- avoids
+  # "tuple concurrently updated" errors from PostgreSQL, which show
+  # up, when there are concurrent attempts to execute "CREATE OR
+  # REPLACE FUNCTION" SQL statements. I can't say, whether this is
+  # LEARN-specific, or whether this concerns "CREATE OR REPLACE
+  # FUNCTION" in general, but the error shows ap at the following
+  # statement. The pg_advisory_lock() guarantees sequential updates;
+  # maybe this has as well to be defined on other places.
+  #
   ::xo::dc dml create-trigger {
+    SELECT pg_advisory_lock(4711);
     CREATE OR REPLACE FUNCTION xolp_indicator_upsert_tr() RETURNS trigger AS '
     BEGIN
     NEW.begin_date_id := (SELECT date_id FROM xolp_date_dimension where date = NEW.begin_timestamp::date);
@@ -109,6 +120,7 @@ namespace eval ::xolp {
     ' LANGUAGE plpgsql;
     DROP TRIGGER IF EXISTS xolp_indicator_upsert_tr ON xolp_indicator_facts;
     CREATE TRIGGER xolp_indicator_upsert_tr BEFORE INSERT OR UPDATE ON xolp_indicator_facts FOR EACH ROW EXECUTE PROCEDURE xolp_indicator_upsert_tr();
+    SELECT pg_advisory_unlock(4711);
   }
 
   ::xolp::Indicator ad_proc exists_in_db {
@@ -162,7 +174,7 @@ namespace eval ::xolp {
     Note, however, that there is no recursive aggregation and no weighting of indicators.
     In other words, you get all actual indicator values attached to any activity in the tree/forest
     requested by the provided activity_iris.
-    The <code>*_constraint</code> parameters are meant to be SQL WHERE clause search conditions that 
+    The <code>*_constraint</code> parameters are meant to be SQL WHERE clause search conditions that
     are directly applied. Typically using one or a few properties (see above), e.g. <code>-storage_time_constraint \"storage_dow = 'Monday'\"</code>
     @param properties         A list that specifies the values to be included in the dictionary.
                               Allowed properties are:
