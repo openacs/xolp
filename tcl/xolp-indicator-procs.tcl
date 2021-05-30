@@ -96,7 +96,7 @@ namespace eval ::xolp {
   ::xo::db::require index -table xolp_indicator_facts -col storage_time_id
 
   #
-  # The following code - which is already PostgreSQL-specifc -- avoids
+  # The following code - which is already PostgreSQL-specific -- avoids
   # "tuple concurrently updated" errors from PostgreSQL, which show
   # up, when there are concurrent attempts to execute "CREATE OR
   # REPLACE FUNCTION" SQL statements. I can't say, whether this is
