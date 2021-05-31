@@ -105,22 +105,32 @@ namespace eval ::xolp {
   # statement. The pg_advisory_lock() guarantees sequential updates;
   # maybe this has as well to be defined on other places.
   #
-  ::xo::dc dml create-trigger {
-    SELECT pg_advisory_lock(4711);
-    CREATE OR REPLACE FUNCTION xolp_indicator_upsert_tr() RETURNS trigger AS '
-    BEGIN
-    NEW.begin_date_id := (SELECT date_id FROM xolp_date_dimension where date = NEW.begin_timestamp::date);
-    NEW.begin_time_id := (SELECT time_id FROM xolp_time_dimension where time = to_char(NEW.begin_timestamp::time,''HH24:MI'')::time);
-    NEW.end_date_id := (SELECT date_id FROM xolp_date_dimension where date = NEW.end_timestamp::date);
-    NEW.end_time_id := (SELECT time_id FROM xolp_time_dimension where time = to_char(NEW.end_timestamp::time,''HH24:MI'')::time);
-    NEW.storage_date_id := (SELECT date_id FROM xolp_date_dimension where date = NEW.storage_timestamp::date);
-    NEW.storage_time_id := (SELECT time_id FROM xolp_time_dimension where time = to_char(NEW.storage_timestamp::time,''HH24:MI'')::time);
-    RETURN NEW;
-    END;
-    ' LANGUAGE plpgsql;
-    DROP TRIGGER IF EXISTS xolp_indicator_upsert_tr ON xolp_indicator_facts;
-    CREATE TRIGGER xolp_indicator_upsert_tr BEFORE INSERT OR UPDATE ON xolp_indicator_facts FOR EACH ROW EXECUTE PROCEDURE xolp_indicator_upsert_tr();
-    SELECT pg_advisory_unlock(4711);
+  ::xo::dc transaction {
+    ::xo::dc get_value lock_on {
+      SELECT pg_advisory_lock(4711);
+    }
+    ::xo::dc dml create_trigger_function {
+      CREATE OR REPLACE FUNCTION xolp_indicator_upsert_tr() RETURNS trigger AS '
+      BEGIN
+      NEW.begin_date_id := (SELECT date_id FROM xolp_date_dimension where date = NEW.begin_timestamp::date);
+      NEW.begin_time_id := (SELECT time_id FROM xolp_time_dimension where time = to_char(NEW.begin_timestamp::time,''HH24:MI'')::time);
+      NEW.end_date_id := (SELECT date_id FROM xolp_date_dimension where date = NEW.end_timestamp::date);
+      NEW.end_time_id := (SELECT time_id FROM xolp_time_dimension where time = to_char(NEW.end_timestamp::time,''HH24:MI'')::time);
+      NEW.storage_date_id := (SELECT date_id FROM xolp_date_dimension where date = NEW.storage_timestamp::date);
+      NEW.storage_time_id := (SELECT time_id FROM xolp_time_dimension where time = to_char(NEW.storage_timestamp::time,''HH24:MI'')::time);
+      RETURN NEW;
+      END;
+      ' LANGUAGE plpgsql
+    }
+    ::xo::dc dml drop_old_trigger {
+      DROP TRIGGER IF EXISTS xolp_indicator_upsert_tr ON xolp_indicator_facts
+    }
+    ::xo::dc dml create_new_trigger {
+      CREATE TRIGGER xolp_indicator_upsert_tr BEFORE INSERT OR UPDATE ON xolp_indicator_facts FOR EACH ROW EXECUTE PROCEDURE xolp_indicator_upsert_tr()
+    }
+    ::xo::dc get_value lock_off {
+      SELECT pg_advisory_unlock(4711);
+    }
   }
 
   ::xolp::Indicator ad_proc exists_in_db {
