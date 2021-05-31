@@ -1008,6 +1008,9 @@ aa_register_case \
 
 aa_register_case \
     -cats {api} \
+    -procs {
+        "::xolp::User proc get_result"
+    } \
     scenario_composite_activity {
         Register several indicators for several activities that form a composite.
     } {
@@ -1328,6 +1331,9 @@ aa_register_case \
 aa_register_case \
     -init_classes {test_data_populate} \
     -cats {api} \
+    -procs {
+        "::xolp::User proc get_result"
+    } \
     user_get_composite_activity_result {
         Get result a user gained in a context (for example a community/course).
     } {
@@ -1361,6 +1367,9 @@ aa_register_case \
 aa_register_case \
     -init_classes {test_data_populate} \
     -cats {api} \
+    -procs {
+        "::xolp::User proc get_result"
+    } \
     user_get_result {
         Get result of a user.
     } {
@@ -1476,6 +1485,10 @@ aa_register_case \
 aa_register_case \
     -init_classes {competency_test_data_populate} \
     -cats {api} \
+    -procs {
+        "::xolp::User proc get_competencies"
+        "::xolp::User proc get_competencies_recursive"
+    } \
     user_get_competencies {
         Get results/evaluations of users for competencies.
     } {
@@ -1502,6 +1515,10 @@ aa_register_case \
 aa_register_case \
     -init_classes {competency_test_data_populate} \
     -cats {api} \
+    -procs {
+        "::xolp::User proc get_competency_evaluation"
+        "::xolp::User proc get_competency_result"
+    } \
     user_get_competency_evaluation {
         Get results/evaluations of users for competencies.
     } {
