@@ -161,15 +161,16 @@ namespace eval ::xolp {
     {-package_url ""}
     {-begin_timestamp ""}
     {-end_timestamp ""}
-    {-scd_valid_from "current_timespamp"}
+    {-scd_valid_from ""}
     args
   } {
     @return Instance of ::xolp::Activity
   } {
     if {[:iri_exists_in_db -iri $iri]} {
       set latest_persisted_activity [:current -iri $iri]
-      if {[::xo::dc get_value is_newer "SELECT '$scd_valid_from' > '[$latest_persisted_activity scd_valid_to]'"] eq f} {
-        error "Activity $iri is already registered.\n$scd_valid_from < [$latest_persisted_activity scd_valid_to]\nUse 'update' (or 'require') instead... "
+      set scd_valid_to [$latest_persisted_activity scd_valid_to]
+      if {![::xo::dc get_value is_newer {SELECT coalesce(:scd_valid_from, current_timestamp) > :scd_valid_to from dual}]} {
+        error "Activity $iri is already registered.\n$scd_valid_from < $scd_valid_to\nUse 'update' (or 'require') instead... "
       }
     }
     next
