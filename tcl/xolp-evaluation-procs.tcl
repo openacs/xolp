@@ -224,7 +224,10 @@ namespace eval ::xolp {
   # Evaluator
   #
 
-  ::xotcl::Object create ::xolp::Evaluator -ad_doc {}
+  ::xotcl::Object create ::xolp::Evaluator -ad_doc {
+    Class performing the evaluation of results according to one or
+    more evaluation scales.
+  }
 
   ::xolp::Evaluator ad_proc evaluate {
     -results:required
