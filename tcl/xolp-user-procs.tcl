@@ -11,7 +11,9 @@
 
 namespace eval ::xolp {
 
-  ::xotcl::Object create ::xolp::User -ad_doc {}
+  ::xotcl::Object create ::xolp::User -ad_doc {
+    Interface to queries on the XoLP datamodel involving users.
+  }
 
   ::xolp::User ad_proc get_result {
     {-user_id:required}
