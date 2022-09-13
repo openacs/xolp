@@ -44,7 +44,7 @@ namespace eval ::xolp::util {
 
 namespace eval ::xolp::test {
 
-    ad_proc create_test_iris {{-nr 1}} {} {
+    ad_proc -private create_test_iris {{-nr 1}} {
       set iris {}
       for {set i 1} {$i <= $nr} {incr i} {
         lappend iris "xolp:test:[ns_uuid]"
@@ -52,7 +52,7 @@ namespace eval ::xolp::test {
       return $iris
     }
 
-    ad_proc create_test_users {{-nr 1}} {} {
+    ad_proc -private create_test_users {{-nr 1}} {
       set user_ids [list]
       for {set i 1} {$i <= $nr} {incr i} {
         set user [acs::test::user::create]
@@ -61,16 +61,16 @@ namespace eval ::xolp::test {
       return $user_ids
     }
 
-    ad_proc delete_test_user {-user_id} {} {
+    ad_proc -private delete_test_user {-user_id} {
       acs_user::delete -user_id $user_id -permanent
     }
 
-    ad_proc random_element {l} {} {
-        lindex $l [expr {int(rand()*[llength $l])}]
+    ad_proc -private random_element {l} {
+      lindex $l [expr {int(rand()*[llength $l])}]
     }
 
-    ad_proc random_timestamp {} {
-        Stupid random date generator.
+    ad_proc -private random_timestamp {} {
+      Stupid random date generator.
     } {
         # Random date for dummies...
         for {set i 2001} {$i < 2016} {incr i} {lappend years $i}
@@ -85,15 +85,17 @@ namespace eval ::xolp::test {
         return $ts
     }
 
-    ad_proc random_earlier_timestamp {ts} {
-        Simple function to generate from an end_timestamp a "random" begin_timestamp,
-      which is within sensible boundaries.
+    ad_proc -private random_earlier_timestamp {ts} {
+      Simple function to generate from an end_timestamp a "random"
+      begin_timestamp, which is within sensible boundaries.
     } {
       set ts [clock scan $ts -format "%Y-%m-%d %T z" -timezone :UTC]
       clock format [clock add $ts -[expr {int(rand()*180)}] minute] -format "%Y-%m-%d %T z" -timezone :UTC
     }
 
-    ad_proc -private get_testcase_for_documentation {-case:required {-index 3}} {
+    ad_proc -private get_testcase_for_documentation {
+      -case:required
+      {-index 3}
     } {
       package require textutil
       foreach t [nsv_get aa_test cases] {
