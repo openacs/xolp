@@ -312,6 +312,7 @@ namespace eval ::xolp {
   ::xolp::Indicator ad_proc get_instance_from_db {
     {-indicator_id:required}
   } {
+    Instantiates an Indicator from the database.
   } {
     ::xo::dc 1row fetch {SELECT * FROM xolp_indicator_facts WHERE indicator_id = :indicator_id}
     set attributes [list indicator_id {*}[:essential_attributes]]
