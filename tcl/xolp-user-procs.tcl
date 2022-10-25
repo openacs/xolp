@@ -135,7 +135,7 @@ namespace eval ::xolp {
     if {$agg ni "min max avg"} {error "Unknown policy."}
     set competency_dict [:get_competencies -user_id $user_id -policy $policy]
     set competency_iris [dict keys $competency_dict]
-    set quoted_list [::xolp::util::ltransform -prefix "'" -suffix "'" $competency_iris]
+    set quoted_list [ns_dbquotelist $competency_iris]
     # TODO: Avoid the second "poor mans" union clause
     set sql "
       WITH RECURSIVE competency_hierarchy AS (

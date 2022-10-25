@@ -37,7 +37,6 @@ namespace eval ::xolp {
     ::xo::dc transaction {
       set set_id [:get_set_id -competency_iris $competency_iris]
       if {$set_id eq ""} {
-        set quoted_list [::xolp::util::ltransform -prefix "'" -suffix "'" $competency_iris]
         set set_id [::xo::dc get_value insert_set "
           INSERT INTO xolp_competency_set_dimension
           DEFAULT VALUES
@@ -47,7 +46,7 @@ namespace eval ::xolp {
           INSERT INTO xolp_competency_set_bridge(competency_set_id,competency_id)
           SELECT :set_id, competency_id
           FROM xolp_competency_dimension
-          WHERE iri IN ([join $quoted_list ,])
+          WHERE iri IN ([ns_dbquotelist $competency_iris])
         "
       }
     }
@@ -59,14 +58,13 @@ namespace eval ::xolp {
   } {
     @return competency_set_id
   } {
-    set quoted_list [::xolp::util::ltransform -prefix "'" -suffix "'" $competency_iris]
     ::xo::dc get_value get_competency_set_id "
       SELECT competency_set_id
       FROM xolp_competency_set_bridge
       GROUP BY competency_set_id
       HAVING xolp_compare_array_as_set(
         array_agg(competency_id),
-        (select array_agg(competency_id) from xolp_competency_dimension where iri IN ([join $quoted_list ,]))
+        (select array_agg(competency_id) from xolp_competency_dimension where iri IN ([ns_dbquotelist $competency_iris]))
         ) = TRUE;
     "
   }
@@ -77,11 +75,10 @@ namespace eval ::xolp {
     Check if all competencies exist.
   } {
     if {[llength $competency_iris] eq 0} {error "Empty list provided"}
-    set quoted_list [::xolp::util::ltransform -prefix "'" -suffix "'" $competency_iris]
     set nr_known_competencies [::xo::dc get_value count_competencies "
       SELECT count(*)
       FROM xolp_competency_dimension
-      WHERE iri IN ([join $quoted_list ,])
+      WHERE iri IN ([ns_dbquotelist $competency_iris])
     "]
     return [expr {[llength $competency_iris] eq $nr_known_competencies}]
   }
@@ -91,14 +88,13 @@ namespace eval ::xolp {
   } {
     Get the competency set id, or create it if it does not exist
   } {
-    set quoted_list [::xolp::util::ltransform -prefix "'" -suffix "'" $competency_iris]
     ::xo::dc get_value check_competency_set_exists "
       SELECT 1
       FROM xolp_competency_set_bridge
       GROUP BY competency_set_id
       HAVING xolp_compare_array_as_set(
         array_agg(competency_id),
-        (select array_agg(competency_id) from xolp_competency_dimension where iri IN ([join $quoted_list ,]))
+        (select array_agg(competency_id) from xolp_competency_dimension where iri IN ([ns_dbquotelist $competency_iris]))
       ) = TRUE;
     " 0
   }

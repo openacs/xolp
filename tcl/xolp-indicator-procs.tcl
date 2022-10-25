@@ -235,14 +235,13 @@ namespace eval ::xolp {
     # Dimension: Activities
     if {$activity_iris ne ""} {
       set dimension_table "xolp_activity_dimension"
-      set transformed_list [::xolp::util::ltransform -prefix "'" -suffix "'" $activity_iris]
       # We need the descendants of the provided activities as well, in order to retrieve the
       # descendant indicators.
       set sql "
         WITH RECURSIVE activity_hierarchy AS (
             SELECT a.iri as activity_iri, a.activity_version_id
             FROM xolp_activity_dimension a
-            WHERE (a.iri IN ([join $transformed_list ,]))
+            WHERE (a.iri IN ([ns_dbquotelist $activity_iris]))
           UNION
             SELECT br.activity_iri, ac.activity_version_id
             FROM xolp_activity_hierarchy_bridge br, activity_hierarchy h, xolp_activity_dimension ac
@@ -271,8 +270,7 @@ namespace eval ::xolp {
     if {$activity_verb_iris ne ""} {
       set dimension_table xolp_activity_verb_dimension
       lappend dimensions "INNER JOIN $dimension_table USING (activity_verb_id)"
-      set transformed_list [::xolp::util::ltransform -prefix "'" -suffix "'" $activity_verb_iris]
-      lappend where_clause " ${dimension_table}.iri IN ([join $transformed_list ,]) "
+      lappend where_clause " ${dimension_table}.iri IN ([ns_dbquotelist $activity_verb_iris]) "
     }
     if {$where_clause ne ""} {
       set where_clause "WHERE [join $where_clause { AND }]"
