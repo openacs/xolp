@@ -34,22 +34,28 @@ namespace eval ::xolp {
   } {
     if {[llength $competency_iris] eq 0} {error "Empty list provided."}
     if {![:all_exist -competency_iris $competency_iris]} {error "List contains unknown competencies."}
-    ::xo::dc transaction {
-      set set_id [:get_set_id -competency_iris $competency_iris]
-      if {$set_id eq ""} {
-        set set_id [::xo::dc get_value insert_set "
-          INSERT INTO xolp_competency_set_dimension
-          DEFAULT VALUES
-          RETURNING competency_set_id;
-        "]
-        ::xo::dc dml insert_set "
-          INSERT INTO xolp_competency_set_bridge(competency_set_id,competency_id)
-          SELECT :set_id, competency_id
-          FROM xolp_competency_dimension
-          WHERE iri IN ([ns_dbquotelist $competency_iris])
-        "
-      }
-    }
+    set set_id [:get_set_id -competency_iris $competency_iris]
+    #
+    # This commented block is de-facto dead code, because
+    # ::xolp::Competency get_set_id must return a value and
+    # xolp_competency_set_bridge.competency_set_id is defined as not
+    # null. This has not been a problem for our usage so far...
+    #
+    # if {$set_id eq ""} {
+    #   ::xo::dc transaction {
+    #     set set_id [::xo::dc get_value insert_set "
+    #       INSERT INTO xolp_competency_set_dimension
+    #       DEFAULT VALUES
+    #       RETURNING competency_set_id;
+    #     "]
+    #     ::xo::dc dml insert_set "
+    #       INSERT INTO xolp_competency_set_bridge(competency_set_id,competency_id)
+    #       SELECT :set_id, competency_id
+    #       FROM xolp_competency_dimension
+    #       WHERE iri IN ([ns_dbquotelist $competency_iris])
+    #     "
+    #   }
+    # }
     return $set_id
   }
 
