@@ -201,13 +201,19 @@ namespace eval ::xolp {
     Updates the activity in the xolp_activity_dimension table by creating a new version.
   } {
     ::xo::dc transaction {
-      set old [:current -iri $iri]
-      set scd_valid_to_new [::xo::dc get_value roll-step1 "
+      set scd_valid_to_new [::xo::dc get_value roll-step1 {
         UPDATE xolp_activity_dimension
         SET scd_valid_to = current_timestamp
-        WHERE activity_version_id = [$old activity_version_id]
+        WHERE activity_version_id = (SELECT activity_version_id
+                                     FROM xolp_activity_dimension
+                                     WHERE iri = :iri
+                                     ORDER BY scd_valid_to DESC
+                                     FETCH FIRST 1 ROWS ONLY)
         RETURNING scd_valid_to + INTERVAL '0.000001' SECOND
-      "]
+      } ""]
+      if {$scd_valid_to_new eq ""} {
+        error "Activity $iri does not exists"
+      }
       lappend args {*}[list -iri "$iri" -scd_valid_from "$scd_valid_to_new"]
       set new [:new_persistent_object {*}$args]
     }
