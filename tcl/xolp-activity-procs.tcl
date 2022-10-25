@@ -169,12 +169,14 @@ namespace eval ::xolp {
   } {
     @return Instance of ::xolp::Activity
   } {
-    if {[:iri_exists_in_db -iri $iri]} {
-      set latest_persisted_activity [:current -iri $iri]
-      set scd_valid_to [$latest_persisted_activity scd_valid_to]
-      if {![::xo::dc get_value is_newer {SELECT coalesce(:scd_valid_from, current_timestamp) > :scd_valid_to from dual}]} {
-        error "Activity $iri is already registered.\n$scd_valid_from < $scd_valid_to\nUse 'update' (or 'require') instead... "
-      }
+    ::xo::dc 1row get_scd_valid_to {
+      SELECT max(scd_valid_to) as scd_valid_to,
+             coalesce(coalesce(:scd_valid_from, current_timestamp) <= max(scd_valid_to), 'f') as is_older_p
+      FROM xolp_activity_dimension
+      WHERE iri = :iri
+    }
+    if {$is_older_p} {
+      error "Activity $iri is already registered.\n$scd_valid_from < $scd_valid_to\nUse 'update' (or 'require') instead... "
     }
     next
   }
