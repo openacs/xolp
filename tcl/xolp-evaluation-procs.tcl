@@ -34,10 +34,8 @@ namespace eval ::xolp {
   ::xolp::EvaluationSchema ad_proc new_persistent_object {args} {
     Create new persistent object
   } {
-    array set argsarray $args
-    if {[llength [array get argsarray "-level_names"]] > 0
-        && [llength [array get argsarray "-positive_threshold_index"]] > 0
-        && (([llength $argsarray(-level_names)] - 1 ) <= $argsarray(-positive_threshold_index))} {
+    if {[dict exists $args "-level_names"] && [dict exists $args "-positive_threshold_index"]
+        && ( ( [llength [dict get $args "-level_names"]] - 1 ) <= [dict get $args "-positive_threshold_index"] )} {
       error "The positive_threshold_index must refer to a threshold index, i.e. it must not be larger than the list of levels minus one..."
     }
     next
