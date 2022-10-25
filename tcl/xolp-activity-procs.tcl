@@ -94,14 +94,15 @@ namespace eval ::xolp {
     Get the most recent version of the Activity from the data base.
     @return Instance of ::xolp::Activity
   } {
-    if {![:iri_exists_in_db -iri $iri]} {error "Activity $iri does not exists"}
-    set activity_version_id [::xo::dc get_value select_current_activity_version "
+    if {![::xo::dc 0or1row select_current_activity_version {
         SELECT activity_version_id
         FROM xolp_activity_dimension
         WHERE iri = :iri
         ORDER BY scd_valid_to DESC
-        LIMIT 1
-    "]
+        FETCH FIRST 1 ROWS ONLY
+    }]} {
+      error "Activity $iri does not exists"
+    }
     return [::xo::db::Class get_instance_from_db -id $activity_version_id]
   }
 
