@@ -83,7 +83,9 @@ namespace eval ::xolp {
     Check whether or not an activity with this iri is already stored in the data base.
     @return Boolean
   } {
-    return [::xo::dc get_value select_object "SELECT DISTINCT 1 FROM xolp_activity_dimension WHERE iri = :iri" 0]
+    return [::xo::dc 0or1row select_object {
+      SELECT 1 FROM xolp_activity_dimension WHERE iri = :iri fetch first 1 rows only
+    }]
   }
 
   ::xolp::Activity ad_proc current {
