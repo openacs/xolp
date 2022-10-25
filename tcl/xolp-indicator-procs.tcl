@@ -176,7 +176,7 @@ namespace eval ::xolp {
     {-end_date_constraint ""}
     {-storage_time_constraint ""}
     {-storage_date_constraint ""}
-  } "
+  } {
     Fast retrieval of duration and percentage values
     from the indicators fact table.
     Each provided parameter value acts as additional filter of the result set.
@@ -200,7 +200,7 @@ namespace eval ::xolp {
     @param end_date_constraint see description above
     @param storage_time_constraint see description above
     @param storage_date_constraint see description above
-  " {
+  } {
     if {$user_ids eq "" && $activity_iris eq ""} {
       error "Invalid arguments. Please provide a filter for the indicators."
     }
