@@ -32,30 +32,24 @@ namespace eval ::xolp {
     Get the competency set or create it if it does not exist.
     @return competency_set_id
   } {
-    if {[llength $competency_iris] eq 0} {error "Empty list provided."}
-    if {![:all_exist -competency_iris $competency_iris]} {error "List contains unknown competencies."}
     set set_id [:get_set_id -competency_iris $competency_iris]
-    #
-    # This commented block is de-facto dead code, because
-    # ::xolp::Competency get_set_id must return a value and
-    # xolp_competency_set_bridge.competency_set_id is defined as not
-    # null. This has not been a problem for our usage so far...
-    #
-    # if {$set_id eq ""} {
-    #   ::xo::dc transaction {
-    #     set set_id [::xo::dc get_value insert_set "
-    #       INSERT INTO xolp_competency_set_dimension
-    #       DEFAULT VALUES
-    #       RETURNING competency_set_id;
-    #     "]
-    #     ::xo::dc dml insert_set "
-    #       INSERT INTO xolp_competency_set_bridge(competency_set_id,competency_id)
-    #       SELECT :set_id, competency_id
-    #       FROM xolp_competency_dimension
-    #       WHERE iri IN ([ns_dbquotelist $competency_iris])
-    #     "
-    #   }
-    # }
+
+    if {$set_id eq ""} {
+      ::xo::dc transaction {
+        set set_id [::xo::dc get_value insert_set "
+          INSERT INTO xolp_competency_set_dimension
+          DEFAULT VALUES
+          RETURNING competency_set_id;
+        "]
+        ::xo::dc dml insert_set "
+          INSERT INTO xolp_competency_set_bridge(competency_set_id,competency_id)
+          SELECT :set_id, competency_id
+          FROM xolp_competency_dimension
+          WHERE iri IN ([ns_dbquotelist $competency_iris])
+        "
+      }
+    }
+
     return $set_id
   }
 
@@ -64,15 +58,33 @@ namespace eval ::xolp {
   } {
     @return competency_set_id
   } {
-    ::xo::dc get_value get_competency_set_id "
-      SELECT competency_set_id
-      FROM xolp_competency_set_bridge
-      GROUP BY competency_set_id
-      HAVING xolp_compare_array_as_set(
-        array_agg(competency_id),
-        (select array_agg(competency_id) from xolp_competency_dimension where iri IN ([ns_dbquotelist $competency_iris]))
-        ) = TRUE;
-    "
+    set n_competences [llength $competency_iris]
+    if {$n_competences == 0} {
+      error "Empty list provided."
+    }
+
+    ::xo::dc 1row get_competency_set_id [subst {
+      with known_competences as (
+         select competency_id
+         from xolp_competency_dimension
+         where iri IN ([ns_dbquotelist $competency_iris])
+      )
+      select (SELECT competency_set_id
+              FROM xolp_competency_set_bridge
+              GROUP BY competency_set_id
+              HAVING xolp_compare_array_as_set(
+                array_agg(competency_id),
+                (select array_agg(competency_id) from known_competences)
+                ) = TRUE) as set_id,
+             (select count(*) from known_competences) as nr_known_competencies
+      from dual
+    }]
+
+    if {$n_competences != $nr_known_competencies} {
+      error "List contains unknown competencies."
+    }
+
+    return $set_id
   }
 
   ::xolp::Competency ad_proc all_exist {
