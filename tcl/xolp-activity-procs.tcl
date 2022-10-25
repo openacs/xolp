@@ -309,17 +309,15 @@ namespace eval ::xolp {
     Attach the activity to a competency, i.e. the activity is considered
     to prove this competency up to a certain level (charge percentage).
   } {
-    ::xo::dc transaction {
-      set insert_sql "
-        INSERT INTO xolp_activity_competency_bridge(activity_iri, competency_iri, charge_numerator, charge_denominator)
-        VALUES (:activity_iri, :competency_iri, :charge_numerator, :charge_denominator)
-        ON CONFLICT (activity_iri, competency_iri)
-          DO UPDATE SET
-            charge_numerator = EXCLUDED.charge_numerator,
-            charge_denominator = EXCLUDED.charge_denominator
-      "
-      ::xo::dc dml dbqd..insert_activity_competency_charge $insert_sql
+    set insert_sql {
+      INSERT INTO xolp_activity_competency_bridge(activity_iri, competency_iri, charge_numerator, charge_denominator)
+      VALUES (:activity_iri, :competency_iri, :charge_numerator, :charge_denominator)
+      ON CONFLICT (activity_iri, competency_iri)
+        DO UPDATE SET
+          charge_numerator = EXCLUDED.charge_numerator,
+          charge_denominator = EXCLUDED.charge_denominator
     }
+    ::xo::dc dml dbqd..insert_activity_competency_charge $insert_sql
   }
 
   ::xolp::Activity ad_proc get_competencies {
