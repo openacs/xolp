@@ -104,7 +104,9 @@ namespace eval ::xolp {
   ::xolp::Competency ad_proc exists_set {
     {-competency_iris:required}
   } {
-    Get the competency set id, or create it if it does not exist
+    Tells if a competency set exists for given competencies.
+
+    @return boolean
   } {
     ::xo::dc get_value check_competency_set_exists "
       SELECT 1
